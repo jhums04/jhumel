@@ -1,0 +1,30 @@
+/*
+Theme Name: Jhumel
+Author: Jhumel Bonganciso
+Description: Block theme for the Jhumel Builds portfolio site.
+Requires at least: 6.6
+Tested up to: 7.1
+Requires PHP: 8.1
+Version: 0.1.0
+License: GPL-2.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: jhumel
+*/
+
+/* theme.json styles focus only for links and buttons; the menu toggles need it too. */
+.wp-block-navigation__responsive-container-open:focus-visible,
+.wp-block-navigation__responsive-container-close:focus-visible {
+	outline: 2px solid var(--wp--preset--color--blue);
+	outline-offset: 2px;
+}
+
+/* theme.json cannot give a block style variation its own hover state. */
+.wp-block-button.is-style-outline > .wp-block-button__link:hover {
+	background-color: var(--wp--preset--color--black);
+	color: var(--wp--preset--color--white);
+}
+
+/* The divider above the footer; the footer is a template part, which has no border support. */
+footer.wp-block-template-part {
+	border-top: 1px solid var(--wp--preset--color--gray-200);
+}
