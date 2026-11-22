@@ -1,0 +1,34 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dashboard (Node / Vite)
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+.vite/
+
+# WordPress plugin (PHP / Composer)
+wordpress/plugins/quote-form/vendor/
+.phpunit.cache/
+.phpunit.result.cache
+.phpcs-cache
+
+# Supabase
+supabase/.branches/
+supabase/.temp/
+
+# Local Docker data
+infra/data/
+*.sql.gz
+
+# Logs
+*.log
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
