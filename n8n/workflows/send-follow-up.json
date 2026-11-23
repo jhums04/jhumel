@@ -1,0 +1,518 @@
+{
+  "id": "sendFollowUpFlow1",
+  "name": "Send follow-up",
+  "active": false,
+  "nodes": [
+    {
+      "id": "19d56a70-7f91-50ca-a0ed-844a1b8a672a",
+      "name": "Receive follow-up",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "29a333a3-101d-5278-95d1-f2589404ad3b",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "send-follow-up",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "http://localhost:5173,https://app.jhumel.dev"
+        }
+      }
+    },
+    {
+      "id": "508f06b6-b6a4-5914-8431-f5c9bd0c04af",
+      "name": "Get current user",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "url": "={{ $env.SUPABASE_URL }}/auth/v1/user",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env.SUPABASE_PUBLISHABLE_KEY }}"
+            },
+            {
+              "name": "Authorization",
+              "value": "={{ $json.headers.authorization ?? '' }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 10000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "ca06a886-894b-5cf2-8626-2614bdbcc0c5",
+      "name": "Is signed in",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "9f3a55b8-7694-505a-8343-4c182d09529b",
+              "leftValue": "={{ $json.statusCode === 200 }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "28b9077c-2f3e-5a9c-95e9-0fc4eed12318",
+      "name": "Reject request",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        500
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ message: \"Sign in again.\" }) }}",
+        "options": {
+          "responseCode": 401
+        }
+      }
+    },
+    {
+      "id": "d00df0fc-6909-52b9-83a5-a4b559fa14ba",
+      "name": "Validate reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        200
+      ],
+      "parameters": {
+        "jsCode": "// The dashboard is the only client, but the request still crosses the network, so every field is checked here.\nconst UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;\nconst MAX_SUBJECT_LENGTH = 150;\nconst MAX_BODY_LENGTH = 5000;\n\nconst request = $('Receive follow-up').first().json.body ?? {};\nconst leadId = typeof request.lead_id === 'string' ? request.lead_id : '';\nconst subject = typeof request.subject === 'string' ? request.subject.trim() : '';\nconst body = typeof request.body === 'string' ? request.body.trim() : '';\n\nconst errors = {};\nif (!UUID_PATTERN.test(leadId)) {\n  errors.lead_id = 'Must be a lead id.';\n}\nif (subject === '' || subject.length > MAX_SUBJECT_LENGTH) {\n  errors.subject = `Enter a subject of 1 to ${MAX_SUBJECT_LENGTH} characters.`;\n}\nif (body === '' || body.length > MAX_BODY_LENGTH) {\n  errors.body = `Enter a message of 1 to ${MAX_BODY_LENGTH} characters.`;\n}\n\nreturn [\n  {\n    json: {\n      is_valid: Object.keys(errors).length === 0,\n      errors,\n      user_id: $input.first().json.body.id,\n      lead_id: leadId,\n      subject,\n      body,\n    },\n  },\n];\n"
+      }
+    },
+    {
+      "id": "4609bad6-8c34-54db-8592-e87698bad000",
+      "name": "Is reply valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        960,
+        200
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "86a2618c-7a2d-515f-a4c0-87d7a9384ba8",
+              "leftValue": "={{ $json.is_valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "e4167e5f-7942-5aee-a28d-0366b189bd26",
+      "name": "Reject invalid reply",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        400
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ errors: $json.errors }) }}",
+        "options": {
+          "responseCode": 422
+        }
+      }
+    },
+    {
+      "id": "ea2d720b-89f4-5644-85ba-7aa9b7693f86",
+      "name": "Find lead for user",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1200,
+        100
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "localSupabasePg1",
+          "name": "Local Supabase Postgres"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Joined to the user's memberships, so a user can only send replies for leads in their own organizations.\nselect leads.id, leads.organization_id, leads.email, organizations.is_demo\nfrom public.leads\njoin public.organizations on organizations.id = leads.organization_id\njoin public.organization_members on organization_members.organization_id = leads.organization_id\n                               and organization_members.user_id = $2::uuid\nwhere leads.id = $1::uuid;",
+        "options": {
+          "queryReplacement": "={{ [ $json.lead_id, $json.user_id ] }}"
+        }
+      }
+    },
+    {
+      "id": "31d07478-a099-5d9d-b1ab-ad790d96ceaf",
+      "name": "Is lead found",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        100
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "381be04a-75ac-500f-ad2e-1b38c6579bb1",
+              "leftValue": "={{ $json.id !== undefined }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "278315c3-eb01-54da-9ab1-bac15383c85d",
+      "name": "Lead not found",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1680,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ message: \"Lead not found.\" }) }}",
+        "options": {
+          "responseCode": 404
+        }
+      }
+    },
+    {
+      "id": "1ffa1979-3241-57aa-acfc-0b0aca489e27",
+      "name": "Is demo organization",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        0
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "574db8c6-2948-5fe3-adb1-2489bbd4823a",
+              "leftValue": "={{ $json.is_demo }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "0ca77256-e389-5d2c-8200-5cb910241767",
+      "name": "Send reply",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1920,
+        100
+      ],
+      "onError": "continueErrorOutput",
+      "credentials": {
+        "smtp": {
+          "id": "localMailpitSmtp",
+          "name": "Local Mailpit SMTP"
+        }
+      },
+      "parameters": {
+        "fromEmail": "=Jhumel <{{ $env.FOLLOW_UP_FROM }}>",
+        "toEmail": "={{ $json.email }}",
+        "subject": "={{ $('Validate reply').first().json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $('Validate reply').first().json.body }}",
+        "options": {
+          "appendAttribution": false,
+          "replyTo": "={{ $env.FOLLOW_UP_REPLY_TO }}"
+        }
+      }
+    },
+    {
+      "id": "185cd2ec-bfa0-5eb0-950b-812c43f5aad1",
+      "name": "Reply could not be sent",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2160,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ message: \"The email service did not respond.\" }) }}",
+        "options": {
+          "responseCode": 502
+        }
+      }
+    },
+    {
+      "id": "e2c261f0-e7b0-560f-bf1b-977d0ab85731",
+      "name": "Log follow-up",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        2160,
+        0
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "localSupabasePg1",
+          "name": "Local Supabase Postgres"
+        }
+      },
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "with logged as (\n  insert into public.lead_activities (lead_id, organization_id, type, details, created_by)\n  values ($1::uuid, $2::uuid, 'email_sent', jsonb_build_object('subject', $3::text, 'delivered', $4::boolean), $5::uuid)\n  returning id\n)\nupdate public.leads\nset stage = 'contacted'\nwhere id = $1::uuid and stage = 'new';",
+        "options": {
+          "queryReplacement": "={{ [ $('Find lead for user').first().json.id, $('Find lead for user').first().json.organization_id, $('Validate reply').first().json.subject, !$('Find lead for user').first().json.is_demo, $('Validate reply').first().json.user_id ] }}"
+        }
+      }
+    },
+    {
+      "id": "2d4e7068-c1b5-5173-ac66-27459489100b",
+      "name": "Confirm follow-up",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        2400,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ delivered: !$('Find lead for user').first().json.is_demo }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Receive follow-up": {
+      "main": [
+        [
+          {
+            "node": "Get current user",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get current user": {
+      "main": [
+        [
+          {
+            "node": "Is signed in",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is signed in": {
+      "main": [
+        [
+          {
+            "node": "Validate reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate reply": {
+      "main": [
+        [
+          {
+            "node": "Is reply valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is reply valid": {
+      "main": [
+        [
+          {
+            "node": "Find lead for user",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject invalid reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find lead for user": {
+      "main": [
+        [
+          {
+            "node": "Is lead found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is lead found": {
+      "main": [
+        [
+          {
+            "node": "Is demo organization",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Lead not found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is demo organization": {
+      "main": [
+        [
+          {
+            "node": "Log follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send reply": {
+      "main": [
+        [
+          {
+            "node": "Log follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reply could not be sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log follow-up": {
+      "main": [
+        [
+          {
+            "node": "Confirm follow-up",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "errorAlertFlow01"
+  },
+  "pinData": {}
+}
