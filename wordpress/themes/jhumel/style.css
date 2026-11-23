@@ -103,6 +103,18 @@ footer p a:hover {
 	}
 }
 
+/* Short pages like the 404 keep the footer at the bottom of the screen instead of halfway up it. */
+.wp-site-blocks {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	min-height: 100dvh;
+}
+
+.wp-site-blocks > main {
+	flex: 1 0 auto;
+}
+
 /* The divider above the footer; the footer is a template part, which has no border support. */
 footer.wp-block-template-part {
 	border-top: 1px solid var(--wp--preset--color--gray-200);
@@ -681,7 +693,7 @@ h3 {
 /* Step 5: the Telegram alert, recreated so it is readable and shows no real person's details. */
 .tg-chat {
 	overflow: hidden;
-	background: #E7EBF0;
+	background: var(--wp--preset--color--gray-50);
 }
 
 .tg-chat__header {
