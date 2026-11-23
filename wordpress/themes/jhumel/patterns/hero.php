@@ -16,33 +16,37 @@
 		<!-- wp:column {"verticalAlignment":"center","width":"56%","style":{"spacing":{"blockGap":"var:preset|spacing|30"}}} -->
 		<div class="wp-block-column is-vertically-aligned-center" style="flex-basis:56%">
 			<!-- wp:heading {"level":1} -->
-			<h1 class="wp-block-heading">Never lose a lead to <em class="accent-underline">slow follow-up</em> again.</h1>
+			<h1 class="wp-block-heading">I build the systems your business <em class="accent-underline">runs on</em>.</h1>
 			<!-- /wp:heading -->
 
 			<!-- wp:paragraph {"fontSize":"medium"} -->
-			<p class="has-medium-font-size">I'm Jhumel, a senior full-stack engineer. I build websites, CRMs, dashboards, and automations, from the screens your team uses to the backend behind them, using AI-assisted development to ship faster. For five years I built the systems banks and insurers run on. Now I build them for businesses like yours.</p>
+			<p class="has-medium-font-size">I'm Jhumel, a senior full-stack engineer. Websites, CRMs, dashboards, automations, and the integrations that make your tools work together: I design the solution, build it end to end, and keep it running. Below is one I built, running live. Send it a test lead and watch it work.</p>
 			<!-- /wp:paragraph -->
 
 			<!-- wp:buttons {"style":{"spacing":{"margin":{"top":"var:preset|spacing|20"}}}} -->
 			<div class="wp-block-buttons" style="margin-top:var(--wp--preset--spacing--20)">
 				<!-- wp:button -->
-				<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#demo">Try the live demo</a></div>
+				<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#demo">See a system live</a></div>
 				<!-- /wp:button -->
 
 				<!-- wp:button {"className":"is-style-outline"} -->
-				<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="#contact">Start a project</a></div>
+				<div class="wp-block-button is-style-outline"><a class="wp-block-button__link wp-element-button" href="#what-i-do">What I can do</a></div>
 				<!-- /wp:button -->
 			</div>
 			<!-- /wp:buttons -->
 
 			<!-- wp:paragraph {"className":"trust-row","textColor":"gray-600","fontSize":"small"} -->
-			<p class="trust-row has-gray-600-color has-text-color has-small-font-size"><span>5 years building bank and insurer systems</span><span>Replies within one business day</span><span>You own the code</span></p>
+			<p class="trust-row has-gray-600-color has-text-color has-small-font-size"><span>5 years building bank and insurer systems</span><span>Design, build, and support</span><span>Replies within one business day</span></p>
 			<!-- /wp:paragraph -->
 		</div>
 		<!-- /wp:column -->
 
 		<!-- wp:column {"verticalAlignment":"center","width":"44%"} -->
 		<div class="wp-block-column is-vertically-aligned-center" style="flex-basis:44%">
+			<!-- wp:paragraph {"className":"scene-label","fontSize":"small"} -->
+			<p class="scene-label has-small-font-size">Live on this page: a lead-to-CRM system</p>
+			<!-- /wp:paragraph -->
+
 			<!-- wp:html -->
 			<div class="lead-scene" aria-hidden="true">
 				<div class="lead-scene__alert">

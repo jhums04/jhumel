@@ -5,31 +5,31 @@
  * Categories: jhumel
  * Inserter: no
  *
- * Five years of internal systems before freelancing, written as business outcomes.
+ * Enterprise engineering highlights from the CV, written as outcomes a business owner understands.
  *
  * @package Jhumel
  */
 
 $jhumel_banking_results = array(
 	array(
-		'result'  => __( 'Ops, simplified', 'jhumel' ),
-		'title'   => __( 'Made operations teams faster and more accurate', 'jhumel' ),
-		'summary' => __( 'I built the CRM screens and workflows that bank and insurer operations staff use all day: fewer manual steps and less copy-pasting, checks that catch mistakes before they spread, and views that show what needs attention next. Requests got handled faster, with fewer errors.', 'jhumel' ),
+		'result'  => __( '~50', 'jhumel' ),
+		'title'   => __( 'APIs and integrations built', 'jhumel' ),
+		'summary' => __( 'Connected core banking and vendor systems end to end: implementation, automated tests, deployment, and QA sign-off.', 'jhumel' ),
 	),
 	array(
 		'result'  => __( '12s → 1s', 'jhumel' ),
-		'title'   => __( 'Made a slow banking service fast', 'jhumel' ),
-		'summary' => __( 'Customers were waiting 12 to 15 seconds for a banking service to respond. I found the cause and cut the wait to about 1 second.', 'jhumel' ),
+		'title'   => __( 'Performance where it counts', 'jhumel' ),
+		'summary' => __( 'Cut a banking service\'s response time from 12 seconds to about 1 by caching its login tokens safely, verified in production.', 'jhumel' ),
 	),
 	array(
-		'result'  => __( 'Months-old', 'jhumel' ),
-		'title'   => __( 'Solved a bug nobody could find', 'jhumel' ),
-		'summary' => __( 'An error had been live in production for months. I traced it through the code, found the cause, and shipped the fix.', 'jhumel' ),
+		'result'  => __( '~200', 'jhumel' ),
+		'title'   => __( 'Production services supported', 'jhumel' ),
+		'summary' => __( 'On call for about 200 core banking services at a major Philippine bank: finding the real cause fast and shipping tested fixes.', 'jhumel' ),
 	),
 	array(
-		'result'  => __( '24/7', 'jhumel' ),
-		'title'   => __( 'Kept a major bank running', 'jhumel' ),
-		'summary' => __( 'I helped keep about 200 core banking services running for a major Philippine bank, including night shifts when things broke.', 'jhumel' ),
+		'result'  => __( '1,000+', 'jhumel' ),
+		'title'   => __( 'Advisors on the platform', 'jhumel' ),
+		'summary' => __( 'Designing and delivering features for a US bank\'s investment platform used by more than 1,000 registered advisors.', 'jhumel' ),
 	),
 );
 ?>
@@ -38,11 +38,11 @@ $jhumel_banking_results = array(
 	<!-- wp:group {"align":"wide","layout":{"type":"constrained","justifyContent":"left"}} -->
 	<div class="wp-block-group alignwide">
 		<!-- wp:heading -->
-		<h2 class="wp-block-heading"><?php esc_html_e( 'Before freelancing: five years of internal systems', 'jhumel' ); ?></h2>
+		<h2 class="wp-block-heading"><?php esc_html_e( 'Five years of enterprise engineering', 'jhumel' ); ?></h2>
 		<!-- /wp:heading -->
 
 		<!-- wp:paragraph {"fontSize":"medium"} -->
-		<p class="has-medium-font-size"><?php esc_html_e( 'Mostly for banks and insurers, where "it mostly works" is not good enough. Client names stay private.', 'jhumel' ); ?></p>
+		<p class="has-medium-font-size"><?php esc_html_e( 'I build and run software for banks and insurers in the US and the Philippines, where downtime and mistakes cost real money. Employer names stay private.', 'jhumel' ); ?></p>
 		<!-- /wp:paragraph -->
 
 		<!-- wp:group {"align":"wide","style":{"spacing":{"blockGap":"var:preset|spacing|30","margin":{"top":"var:preset|spacing|40"}}},"layout":{"type":"grid","minimumColumnWidth":"14rem"}} -->

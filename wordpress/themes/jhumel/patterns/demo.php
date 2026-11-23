@@ -21,11 +21,11 @@ $jhumel_demo_password = defined( 'JHUMEL_DEMO_PASSWORD' ) ? JHUMEL_DEMO_PASSWORD
 		<!-- wp:column {"width":"40%","className":"sticky-intro"} -->
 		<div class="wp-block-column sticky-intro" style="flex-basis:40%">
 			<!-- wp:heading -->
-			<h2 class="wp-block-heading">See it work in five seconds</h2>
+			<h2 class="wp-block-heading">See one of my systems <em class="accent-underline">live</em></h2>
 			<!-- /wp:heading -->
 
 			<!-- wp:paragraph -->
-			<p>Don't take my word for it. This form feeds the same system I build for clients, running live.</p>
+			<p>Don't take my word for it. This is a lead-to-CRM system I built end to end, running for real. The same building blocks work for orders, bookings, support requests, and client onboarding.</p>
 			<!-- /wp:paragraph -->
 
 			<!-- wp:list {"ordered":true,"className":"numbered-steps"} -->

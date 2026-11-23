@@ -224,10 +224,10 @@
 				{
 					"slug": "x-large",
 					"name": "Extra Large",
-					"size": "4.25rem",
+					"size": "3.75rem",
 					"fluid": {
-						"min": "2.5rem",
-						"max": "4.25rem"
+						"min": "2.375rem",
+						"max": "3.75rem"
 					}
 				}
 			]
