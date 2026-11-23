@@ -7,13 +7,15 @@
 
 namespace QuoteForm;
 
+use QuoteForm\Settings\Settings;
+
 /**
- * Creates the submissions table.
+ * Creates the submissions table and the default settings.
  */
 final class Activator {
 
 	/**
-	 * Creates or updates the submissions table.
+	 * Creates or updates the submissions table, and saves default settings unless some exist.
 	 *
 	 * Times are stored in UTC. dbDelta needs the exact formatting below,
 	 * including two spaces after PRIMARY KEY.
@@ -42,5 +44,7 @@ final class Activator {
 				KEY status_created_at (status, created_at)
 			) {$charset_collate};"
 		);
+
+		add_option( Settings::OPTION_NAME, Settings::defaults() );
 	}
 }

@@ -14,6 +14,7 @@
  */
 
 use QuoteForm\Activator;
+use QuoteForm\Plugin;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -22,3 +23,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/vendor/autoload.php';
 
 register_activation_hook( __FILE__, array( Activator::class, 'activate' ) );
+
+( new Plugin() )->register();
