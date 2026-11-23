@@ -216,6 +216,17 @@
 			successPanel.focus();
 		}
 
+		// Back to a blank form. The spam-check token was spent on the last send, so the widget gets a fresh one.
+		function showBlankForm() {
+			form.reset();
+			clearErrors();
+			updateEstimate();
+			successPanel.hidden = true;
+			form.hidden = false;
+			resetTurnstile();
+			form.querySelector( 'input:not([type="hidden"]), select, textarea' ).focus();
+		}
+
 		function setSending( isSending ) {
 			submitButton.disabled = isSending;
 			submitButton.textContent = isSending ? config.messages.sending : submitLabel;
@@ -293,6 +304,7 @@
 		form.addEventListener( 'input', handleFieldEdit );
 		form.addEventListener( 'change', handleFieldEdit );
 		form.addEventListener( 'submit', handleSubmit );
+		wrapper.querySelector( '[data-role="send-another"]' ).addEventListener( 'click', showBlankForm );
 		updateEstimate();
 	}
 

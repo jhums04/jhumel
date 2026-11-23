@@ -204,6 +204,30 @@
 	font-weight: 700;
 }
 
+/* A quieter outline button than Send, so the success message stays the main thing in the panel. */
+.quote-form__again {
+	justify-self: start;
+	margin-top: 0.5rem;
+	padding: 0.625rem 1rem;
+	border: 1px solid var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+	border-radius: var(--quote-form-button-radius, 4px);
+	background-color: transparent;
+	color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.quote-form__again:hover {
+	background-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+	color: var(--wp--preset--color--white, #fff);
+}
+
+.quote-form__again:focus-visible {
+	outline: 2px solid var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+	outline-offset: 2px;
+}
+
 /*
  * Project brief: choices as tap-friendly chips. The real checkbox or radio stays in the page (visually hidden)
  * so keyboards, screen readers, and form validation work as usual; the chip shows its state.
