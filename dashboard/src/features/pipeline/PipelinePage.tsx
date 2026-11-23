@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { Button } from '../../components/Button'
 import type { Lead } from '../leads/leadsApi'
+import { LeadArrivalAnnouncer } from '../leads/LeadArrivalAnnouncer'
 import { getStageLabel, type LeadStage } from '../leads/leadStages'
 import { PipelineBoard } from '../leads/PipelineBoard'
 import { useLeads } from '../leads/useLeads'
@@ -22,7 +24,11 @@ function ErrorMessage({ message, onRetry }: { message: string; onRetry: () => vo
 }
 
 function OrganizationPipeline({ organization }: { organization: Organization }) {
-  const leads = useLeads(organization.id)
+  const [arrivalAnnouncement, setArrivalAnnouncement] = useState('')
+  const leads = useLeads(organization.id, {
+    onLeadArrived: (lead) =>
+      setArrivalAnnouncement(`New lead: ${lead.full_name}${lead.company === null ? '' : `, ${lead.company}`}`),
+  })
   const updateLeadStage = useUpdateLeadStage(organization.id)
 
   function moveLead(lead: Lead, stage: LeadStage) {
@@ -32,6 +38,7 @@ function OrganizationPipeline({ organization }: { organization: Organization }) 
   return (
     <>
       <h1 className="text-2xl font-bold">Pipeline</h1>
+      <LeadArrivalAnnouncer message={arrivalAnnouncement} />
 
       {updateLeadStage.isError && (
         <p role="alert" className="mt-4 rounded border border-error bg-error-background px-4 py-3 text-error">
