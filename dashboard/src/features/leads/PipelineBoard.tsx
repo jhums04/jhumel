@@ -1,0 +1,104 @@
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+  type Announcements,
+  type DragEndEvent,
+  type DragStartEvent,
+  type UniqueIdentifier,
+} from '@dnd-kit/core'
+import { useState } from 'react'
+import { useCurrentTime } from '../../lib/useCurrentTime'
+import { boardKeyboardCoordinates } from './boardKeyboardCoordinates'
+import type { Lead } from './leadsApi'
+import { LeadCardDetails } from './LeadCardDetails'
+import { getStageLabel, isLeadStage, leadStages, type LeadStage } from './leadStages'
+import { PipelineColumn } from './PipelineColumn'
+
+type PipelineBoardProps = {
+  leads: Lead[]
+  onMoveLead: (lead: Lead, stage: LeadStage) => void
+}
+
+const screenReaderInstructions = {
+  draggable:
+    'To move a lead, press Space to pick it up, use the left and right arrow keys to choose a column, then press Space to drop it. Press Escape to cancel.',
+}
+
+function describeColumn(columnId: UniqueIdentifier | undefined): string {
+  return isLeadStage(columnId) ? getStageLabel(columnId) : 'no column'
+}
+
+export function PipelineBoard({ leads, onMoveLead }: PipelineBoardProps) {
+  const currentTime = useCurrentTime()
+  const [draggedLeadId, setDraggedLeadId] = useState<UniqueIdentifier | null>(null)
+
+  // Mouse drags start after 5px so a click can open the lead later; touch waits 250ms so the board still scrolls.
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: boardKeyboardCoordinates }),
+  )
+
+  const findLead = (leadId: UniqueIdentifier) => leads.find((lead) => lead.id === leadId)
+  const leadName = (leadId: UniqueIdentifier) => findLead(leadId)?.full_name ?? 'Lead'
+  const draggedLead = draggedLeadId === null ? undefined : findLead(draggedLeadId)
+
+  const announcements: Announcements = {
+    onDragStart: ({ active }) => {
+      const lead = findLead(active.id)
+      return `Picked up ${leadName(active.id)} from ${lead === undefined ? 'its column' : getStageLabel(lead.stage)}.`
+    },
+    onDragOver: ({ active, over }) => `${leadName(active.id)} is over ${describeColumn(over?.id)}.`,
+    onDragEnd: ({ active, over }) =>
+      over === null
+        ? `${leadName(active.id)} was dropped outside the board and did not move.`
+        : `Moved ${leadName(active.id)} to ${describeColumn(over.id)}.`,
+    onDragCancel: ({ active }) => `Cancelled. ${leadName(active.id)} did not move.`,
+  }
+
+  function handleDragStart(event: DragStartEvent) {
+    setDraggedLeadId(event.active.id)
+  }
+
+  function handleDragEnd({ active, over }: DragEndEvent) {
+    setDraggedLeadId(null)
+    const lead = findLead(active.id)
+    if (lead !== undefined && over !== null && isLeadStage(over.id) && over.id !== lead.stage) {
+      onMoveLead(lead, over.id)
+    }
+  }
+
+  return (
+    <DndContext
+      sensors={sensors}
+      accessibility={{ announcements, screenReaderInstructions }}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      onDragCancel={() => setDraggedLeadId(null)}
+    >
+      <div className="flex gap-4 overflow-x-auto pb-4">
+        {leadStages.map((stage) => (
+          <PipelineColumn
+            key={stage}
+            stage={stage}
+            leads={leads.filter((lead) => lead.stage === stage)}
+            currentTime={currentTime}
+          />
+        ))}
+      </div>
+
+      <DragOverlay>
+        {draggedLead !== undefined && (
+          <div className="cursor-grabbing rounded border border-blue bg-white p-4">
+            <LeadCardDetails lead={draggedLead} currentTime={currentTime} />
+          </div>
+        )}
+      </DragOverlay>
+    </DndContext>
+  )
+}

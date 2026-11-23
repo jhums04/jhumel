@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Outlet } from 'react-router'
 import { useSignedInSession } from '../features/auth/useSession'
+import { OrganizationSwitcher } from '../features/organizations/OrganizationSwitcher'
 import { supabase } from '../lib/supabase'
 import { Button } from './Button'
 
@@ -26,7 +27,8 @@ export function AppLayout() {
       <header className="border-b border-gray-200">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
           <span className="font-bold">Lead Engine</span>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-end gap-4">
+            <OrganizationSwitcher />
             <span className="hidden text-sm text-gray-600 sm:inline">{session.user.email}</span>
             <Button variant="secondary" onClick={() => signOut.mutate()} disabled={signOut.isPending}>
               Sign out
