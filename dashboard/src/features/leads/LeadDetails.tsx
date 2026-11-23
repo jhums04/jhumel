@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 import { formatCurrency } from '../../lib/format'
 import type { LeadDetails as LeadDetailsData } from './leadsApi'
-import { getStageLabel } from './leadStages'
 import { LeadReplyDraft } from './LeadReplyDraft'
+import { LeadStageSelect } from './LeadStageSelect'
 import { ScoreBadge } from './ScoreBadge'
 import { getServiceLabel, getTimelineLabel } from './serviceLabels'
 
@@ -30,8 +30,8 @@ export function LeadDetails({ lead }: { lead: LeadDetailsData }) {
   return (
     <>
       <DetailSection title="Status">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-semibold">{getStageLabel(lead.stage)}</span>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <LeadStageSelect lead={lead} />
           <ScoreBadge score={lead.score} />
         </div>
         {lead.score_reason !== null && <p className="mt-3">{lead.score_reason}</p>}

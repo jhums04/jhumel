@@ -25,9 +25,9 @@ export function AppLayout() {
   return (
     <div className="min-h-screen">
       <header className="border-b border-gray-200">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
-          <span className="font-bold">Lead Engine</span>
-          <div className="flex flex-wrap items-center justify-end gap-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4">
+          <span className="font-bold whitespace-nowrap">Lead Engine</span>
+          <div className="flex items-center justify-end gap-3 sm:gap-4">
             <OrganizationSwitcher />
             <span className="hidden text-sm text-gray-600 sm:inline">{session.user.email}</span>
             <Button variant="secondary" onClick={() => signOut.mutate()} disabled={signOut.isPending}>

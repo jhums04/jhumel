@@ -17,7 +17,7 @@ export function PipelineColumn({ stage, leads, currentTime }: PipelineColumnProp
     <section
       ref={setNodeRef}
       aria-labelledby={headingId}
-      className={`flex w-72 shrink-0 flex-col rounded border p-3 lg:w-auto lg:min-w-0 lg:flex-1 ${isOver ? 'border-blue bg-gray-50' : 'border-gray-200 bg-gray-50'}`}
+      className={`flex w-[85vw] max-w-72 shrink-0 snap-start flex-col rounded border p-3 lg:w-auto lg:max-w-none lg:min-w-0 lg:flex-1 ${isOver ? 'border-blue bg-gray-50' : 'border-gray-200 bg-gray-50'}`}
     >
       <h2 id={headingId} className="flex items-baseline justify-between px-1 text-sm font-semibold">
         {getStageLabel(stage)}

@@ -70,8 +70,11 @@ export function PipelineBoard({ leads, onMoveLead }: PipelineBoardProps) {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragCancel={() => setDraggedLeadId(null)}
+      // Gentler edge scrolling than the default, so on a phone a held card does not race past the target column.
+      autoScroll={{ threshold: { x: 0.1, y: 0.15 }, acceleration: 4 }}
     >
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      {/* On phones one column fills most of the screen; swiping snaps to the next column. */}
+      <div className="flex snap-x snap-proximity gap-4 overflow-x-auto pb-4 lg:snap-none">
         {leadStages.map((stage) => (
           <PipelineColumn
             key={stage}

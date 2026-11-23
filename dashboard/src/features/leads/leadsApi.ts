@@ -10,7 +10,16 @@ export type Lead = Pick<
 export type LeadDetails = Lead &
   Pick<
     Tables<'leads'>,
-    'email' | 'phone' | 'services' | 'timeline' | 'message' | 'source' | 'score_reason' | 'draft_subject' | 'draft_body'
+    | 'organization_id'
+    | 'email'
+    | 'phone'
+    | 'services'
+    | 'timeline'
+    | 'message'
+    | 'source'
+    | 'score_reason'
+    | 'draft_subject'
+    | 'draft_body'
   >
 
 export type LeadActivity = Pick<Tables<'lead_activities'>, 'id' | 'type' | 'details' | 'created_at'>
@@ -40,7 +49,7 @@ export async function fetchLead(leadId: string): Promise<LeadDetails | null> {
   const { data, error } = await supabase
     .from('leads')
     .select(
-      'id, full_name, company, score, estimated_price, created_at, stage, email, phone, services, timeline, message, source, score_reason, draft_subject, draft_body',
+      'id, full_name, company, score, estimated_price, created_at, stage, organization_id, email, phone, services, timeline, message, source, score_reason, draft_subject, draft_body',
     )
     .eq('id', leadId)
     .maybeSingle()

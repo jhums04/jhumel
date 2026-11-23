@@ -52,7 +52,7 @@ export function Drawer({ title, subtitle, onClose, children }: DrawerProps) {
             onClick={closeDialog}
             aria-label="Close"
             autoFocus
-            className="shrink-0 rounded px-2 text-3xl leading-none text-gray-600 hover:text-black"
+            className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded text-3xl leading-none text-gray-600 hover:text-black"
           >
             &times;
           </button>
