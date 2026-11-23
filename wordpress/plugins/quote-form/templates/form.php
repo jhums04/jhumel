@@ -103,5 +103,6 @@ $field_id = static fn( string $field ): string => $form['id'] . '-' . $field;
 	<div class="quote-form__success" data-role="success" role="status" tabindex="-1" hidden>
 		<p class="quote-form__success-title"><?php esc_html_e( 'Request sent', 'quote-form' ); ?></p>
 		<p><?php echo esc_html( $form['success_message'] ); ?></p>
+		<button class="quote-form__again" type="button" data-role="send-another"><?php esc_html_e( 'Send another request', 'quote-form' ); ?></button>
 	</div>
 </div>

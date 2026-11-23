@@ -104,5 +104,6 @@ $error_slot = static function ( string $field ) use ( $field_id ): void {
 	<div class="quote-form__success" data-role="success" role="status" tabindex="-1" hidden>
 		<p class="quote-form__success-title"><?php esc_html_e( 'Brief received', 'quote-form' ); ?></p>
 		<p><?php echo esc_html( $form['success_message'] ); ?></p>
+		<button class="quote-form__again" type="button" data-role="send-another"><?php esc_html_e( 'Send another brief', 'quote-form' ); ?></button>
 	</div>
 </div>
