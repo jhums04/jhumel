@@ -33,13 +33,15 @@ final class SubmissionController {
 	 * @param TurnstileVerifier    $turnstile    Bot check.
 	 * @param RateLimiter          $rate_limiter Per-visitor limit.
 	 * @param SubmissionRepository $repository   Storage.
+	 * @param WebhookDispatcher    $dispatcher   Delivery to n8n.
 	 */
 	public function __construct(
 		private Settings $settings,
 		private SubmissionValidator $validator,
 		private TurnstileVerifier $turnstile,
 		private RateLimiter $rate_limiter,
-		private SubmissionRepository $repository
+		private SubmissionRepository $repository,
+		private WebhookDispatcher $dispatcher
 	) {
 	}
 
@@ -100,7 +102,7 @@ final class SubmissionController {
 		$values    = $validation['values'];
 		$estimator = new PriceEstimator( array_column( $this->settings->all()['services'], 'price', 'key' ) );
 
-		$this->repository->create_pending(
+		$submission_id = $this->repository->create_pending(
 			array(
 				'external_id'       => wp_generate_uuid4(),
 				'organization_slug' => $organization,
@@ -116,6 +118,10 @@ final class SubmissionController {
 			)
 		);
 		$this->rate_limiter->record( $ip_address );
+
+		// First delivery attempt right away. Success or not, the lead is saved, so the visitor sees success;
+		// a failed attempt is retried by RetryScheduler.
+		$this->dispatcher->deliver( $this->repository->find( $submission_id ) );
 
 		return new WP_REST_Response( array( 'status' => 'received' ), 201 );
 	}

@@ -13,9 +13,11 @@ use QuoteForm\Security\TurnstileVerifier;
 use QuoteForm\Settings\Settings;
 use QuoteForm\Settings\SettingsPage;
 use QuoteForm\Settings\SettingsSanitizer;
+use QuoteForm\Submission\RetryScheduler;
 use QuoteForm\Submission\SubmissionController;
 use QuoteForm\Submission\SubmissionRepository;
 use QuoteForm\Submission\SubmissionValidator;
+use QuoteForm\Submission\WebhookDispatcher;
 
 /**
  * Builds the plugin's objects and registers every hook in one place.
@@ -35,14 +37,18 @@ final class Plugin {
 	 */
 	public function register(): void {
 		$settings              = new Settings();
+		$repository            = new SubmissionRepository();
+		$dispatcher            = new WebhookDispatcher( $settings, $repository );
 		$settings_page         = new SettingsPage( $settings, new SettingsSanitizer( $settings ) );
 		$form_shortcode        = new FormShortcode( $settings, $this->plugin_file );
+		$retry_scheduler       = new RetryScheduler( $repository, $dispatcher );
 		$submission_controller = new SubmissionController(
 			$settings,
 			new SubmissionValidator( $settings ),
 			new TurnstileVerifier( $settings ),
 			new RateLimiter(),
-			new SubmissionRepository()
+			$repository,
+			$dispatcher
 		);
 
 		add_action( 'admin_menu', array( $settings_page, 'add_menu_page' ) );
@@ -53,5 +59,9 @@ final class Plugin {
 		add_shortcode( FormShortcode::TAG, array( $form_shortcode, 'render' ) );
 
 		add_action( 'rest_api_init', array( $submission_controller, 'register_routes' ) );
+
+		// phpcs:ignore WordPress.WP.CronInterval.ChangeDetected -- 5 minutes is the retry interval in ARCHITECTURE.md; production runs a real system cron.
+		add_filter( 'cron_schedules', array( $retry_scheduler, 'add_schedule' ) );
+		add_action( RetryScheduler::HOOK, array( $retry_scheduler, 'retry_pending' ) );
 	}
 }

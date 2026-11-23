@@ -15,3 +15,5 @@ global $wpdb;
 $wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $wpdb->prefix . 'quote_form_submissions' ) );
 
 delete_option( 'quote_form_settings' );
+
+wp_clear_scheduled_hook( 'quote_form_retry_pending' );

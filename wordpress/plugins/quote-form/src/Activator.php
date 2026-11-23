@@ -8,9 +8,10 @@
 namespace QuoteForm;
 
 use QuoteForm\Settings\Settings;
+use QuoteForm\Submission\RetryScheduler;
 
 /**
- * Creates the submissions table and the default settings.
+ * Creates the submissions table and the default settings, and starts the retry job.
  */
 final class Activator {
 
@@ -46,5 +47,7 @@ final class Activator {
 		);
 
 		add_option( Settings::OPTION_NAME, Settings::defaults() );
+
+		RetryScheduler::schedule();
 	}
 }
