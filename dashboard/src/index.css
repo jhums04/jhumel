@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+
+/* The palette from docs/DESIGN.md, shared with the WordPress site. Tailwind's default colors are removed. */
+@theme {
+  --color-*: initial;
+  --color-black: #0a0a0a;
+  --color-gray-600: #525252;
+  --color-gray-200: #e5e5e5;
+  --color-gray-50: #f7f7f7;
+  --color-white: #ffffff;
+  --color-blue: #1d4ed8;
+  --color-blue-dark: #1e3a8a;
+  --color-error: #b91c1c;
+  --color-error-background: #fef2f2;
+  --color-success: #15803d;
+  --color-success-background: #f0fdf4;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-white font-sans text-black antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-blue;
+  }
+}
