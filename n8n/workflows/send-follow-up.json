@@ -18,7 +18,7 @@
         "path": "send-follow-up",
         "responseMode": "responseNode",
         "options": {
-          "allowedOrigins": "http://localhost:5173,https://app.jhumel.dev"
+          "allowedOrigins": "http://localhost:5173,https://app.bongancisojhumel.com"
         }
       }
     },
@@ -183,7 +183,7 @@
       "credentials": {
         "postgres": {
           "id": "localSupabasePg1",
-          "name": "Local Supabase Postgres"
+          "name": "Supabase Postgres"
         }
       },
       "parameters": {
@@ -290,7 +290,7 @@
       "credentials": {
         "smtp": {
           "id": "localMailpitSmtp",
-          "name": "Local Mailpit SMTP"
+          "name": "Email SMTP"
         }
       },
       "parameters": {
@@ -334,7 +334,7 @@
       "credentials": {
         "postgres": {
           "id": "localSupabasePg1",
-          "name": "Local Supabase Postgres"
+          "name": "Supabase Postgres"
         }
       },
       "parameters": {

@@ -97,7 +97,7 @@
       "credentials": {
         "postgres": {
           "id": "localSupabasePg1",
-          "name": "Local Supabase Postgres"
+          "name": "Supabase Postgres"
         }
       },
       "parameters": {
@@ -275,7 +275,7 @@
       "credentials": {
         "postgres": {
           "id": "localSupabasePg1",
-          "name": "Local Supabase Postgres"
+          "name": "Supabase Postgres"
         }
       },
       "parameters": {
