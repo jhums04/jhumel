@@ -402,8 +402,19 @@ h3 {
 	box-shadow: var(--wp--preset--shadow--soft);
 }
 
+.screenshot-frame + .screenshot-frame {
+	margin-block-start: var(--wp--preset--spacing--40);
+}
+
 .screenshot-frame figcaption {
 	margin-block-start: 0.875rem;
+}
+
+/* Screenshots on navy: a faint translucent frame instead of a white one, and a deeper shadow. */
+.band-dark .screenshot-frame img {
+	padding: 0.375rem;
+	background: rgba(255, 255, 255, 0.1);
+	box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
 }
 
 /* Text on the navy bands: captions and secondary text use the muted colour, not the light-surface gray. */
@@ -451,7 +462,7 @@ h3 {
 	color: var(--wp--preset--color--white);
 	font-family: var(--wp--preset--font-family--serif);
 	font-weight: 600;
-	box-shadow: 0 0 0 6px var(--wp--preset--color--paper);
+	box-shadow: 0 0 0 6px var(--wp--preset--color--white);
 }
 
 .pipeline-step__visual--narrow .screenshot-frame {

@@ -127,8 +127,8 @@ $jhumel_steps = array(
 	),
 );
 ?>
-<!-- wp:group {"tagName":"section","anchor":"how-it-works","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}}},"layout":{"type":"constrained"}} -->
-<section id="how-it-works" class="wp-block-group alignfull" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
+<!-- wp:group {"tagName":"section","anchor":"how-it-works","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}}},"backgroundColor":"white","layout":{"type":"constrained"}} -->
+<section id="how-it-works" class="wp-block-group alignfull has-white-background-color has-background" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
 	<!-- wp:group {"align":"wide","layout":{"type":"constrained","justifyContent":"left"}} -->
 	<div class="wp-block-group alignwide">
 		<!-- wp:heading -->
@@ -136,7 +136,7 @@ $jhumel_steps = array(
 		<!-- /wp:heading -->
 
 		<!-- wp:paragraph {"fontSize":"medium"} -->
-		<p class="has-medium-font-size">One lead, from the form to the follow-up email, in seven steps, all running on this page right now. Forms, integrations, automations, AI, and dashboards: the same pieces I combine for most business workflows.</p>
+		<p class="has-medium-font-size">Follow one lead from the form to the follow-up email. Seven steps, all running on this page right now, built from the same pieces I use for most business workflows: forms, integrations, automations, AI, and dashboards.</p>
 		<!-- /wp:paragraph -->
 
 		<!-- wp:group {"align":"wide","className":"pipeline","style":{"spacing":{"margin":{"top":"var:preset|spacing|50"},"blockGap":"0"}},"layout":{"type":"default"}} -->

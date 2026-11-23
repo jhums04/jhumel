@@ -33,8 +33,8 @@ $jhumel_banking_results = array(
 	),
 );
 ?>
-<!-- wp:group {"tagName":"section","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}}},"layout":{"type":"constrained"}} -->
-<section class="wp-block-group alignfull" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
+<!-- wp:group {"tagName":"section","anchor":"experience","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}}},"backgroundColor":"amber-50","layout":{"type":"constrained"}} -->
+<section id="experience" class="wp-block-group alignfull has-amber-50-background-color has-background" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
 	<!-- wp:group {"align":"wide","layout":{"type":"constrained","justifyContent":"left"}} -->
 	<div class="wp-block-group alignwide">
 		<!-- wp:heading -->
@@ -42,7 +42,7 @@ $jhumel_banking_results = array(
 		<!-- /wp:heading -->
 
 		<!-- wp:paragraph {"fontSize":"medium"} -->
-		<p class="has-medium-font-size"><?php esc_html_e( 'I build and run software for banks and insurers in the US and the Philippines, where downtime and mistakes cost real money. Employer names stay private.', 'jhumel' ); ?></p>
+		<p class="has-medium-font-size"><?php esc_html_e( 'My day job is building and running software for banks and insurers in the US and the Philippines, where downtime and mistakes cost real money. Your project gets the same care. Employer names stay private.', 'jhumel' ); ?></p>
 		<!-- /wp:paragraph -->
 
 		<!-- wp:group {"align":"wide","style":{"spacing":{"blockGap":"var:preset|spacing|30","margin":{"top":"var:preset|spacing|40"}}},"layout":{"type":"grid","minimumColumnWidth":"14rem"}} -->

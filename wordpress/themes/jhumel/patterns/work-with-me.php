@@ -69,7 +69,7 @@
 			<div class="wp-block-group form-card has-black-color has-white-background-color has-text-color has-background has-link-color" style="border-radius:16px;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40);box-shadow:var(--wp--preset--shadow--soft)">
 			<!-- wp:html -->
 			<?php
-			echo do_shortcode( '[quote_form organization="jhumel" require_message="yes"]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the shortcode escapes its own output.
+			echo do_shortcode( '[quote_form organization="jhumel" type="brief" success_message="Thanks, your brief is in. I read every one myself and will reply within one business day."]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the shortcode escapes its own output.
 			?>
 			<!-- /wp:html -->
 			</div>
