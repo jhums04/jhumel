@@ -17,7 +17,6 @@ final class FormShortcode {
 	public const TAG = 'quote_form';
 
 	private const ASSET_HANDLE     = 'quote-form';
-	private const TURNSTILE_HANDLE = 'quote-form-turnstile';
 	private const TURNSTILE_SCRIPT = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 
 	/**
@@ -33,7 +32,7 @@ final class FormShortcode {
 	}
 
 	/**
-	 * Registers the stylesheet and scripts so render() can enqueue them on demand.
+	 * Registers the stylesheet and script so render() can enqueue them on demand.
 	 */
 	public function register_assets(): void {
 		wp_register_style(
@@ -50,13 +49,11 @@ final class FormShortcode {
 			$this->asset_version( 'assets/js/quote-form.js' ),
 			array( 'strategy' => 'defer' )
 		);
-
-		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Cloudflare versions this script itself.
-		wp_register_script( self::TURNSTILE_HANDLE, self::TURNSTILE_SCRIPT, array(), null, array( 'strategy' => 'defer' ) );
 	}
 
 	/**
-	 * Renders [quote_form organization="demo" require_message="yes" success_message="..."].
+	 * Renders [quote_form organization="demo" require_message="yes" success_message="..."], or the project brief
+	 * with type="brief": what they need, a budget range, a timeline, and a description, with no price calculator.
 	 *
 	 * @param array<string, string>|string $attributes Shortcode attributes; WordPress passes '' when there are none.
 	 */
@@ -64,6 +61,7 @@ final class FormShortcode {
 		$attributes = shortcode_atts(
 			array(
 				'organization'    => '',
+				'type'            => 'quote',
 				'require_message' => 'no',
 				'success_message' => __( 'Thanks, I have your request. I read every one myself and will reply by email.', 'quote-form' ),
 			),
@@ -83,12 +81,11 @@ final class FormShortcode {
 
 		wp_enqueue_style( self::ASSET_HANDLE );
 		wp_enqueue_script( self::ASSET_HANDLE );
-		if ( '' !== $settings['turnstile_site_key'] ) {
-			wp_enqueue_script( self::TURNSTILE_HANDLE );
-		}
+
+		$is_brief = ProjectBrief::FORM_TYPE === $attributes['type'];
 
 		$form = array(
-			'id'                  => 'quote-form-' . $organization,
+			'id'                  => ( $is_brief ? 'project-brief-' : 'quote-form-' ) . $organization,
 			'organization'        => $organization,
 			'nonce'               => wp_create_nonce( 'quote_form_submit_' . $organization ),
 			'services'            => $settings['services'],
@@ -100,14 +97,25 @@ final class FormShortcode {
 				'endpoint'            => rest_url( 'quote-form/v1/submissions' ),
 				// Keeps logged-in users logged in for the request, so the organization nonce still matches.
 				'restNonce'           => wp_create_nonce( 'wp_rest' ),
+				// The script loads Turnstile itself, only when a form nears the screen, so visitors who never reach a
+				// form never download it (about 230 KB per widget).
+				'turnstileScript'     => self::TURNSTILE_SCRIPT,
 				'prices'              => array_column( $settings['services'], 'price', 'key' ),
 				'timelinePercentages' => PriceEstimator::TIMELINE_PERCENTAGES,
+				'formType'            => $is_brief ? ProjectBrief::FORM_TYPE : 'quote',
 				'messages'            => $this->script_messages(),
 			),
 		);
 
+		if ( $is_brief ) {
+			$form['services']  = ProjectBrief::services();
+			$form['budgets']   = ProjectBrief::budgets();
+			$form['timelines'] = ProjectBrief::timelines();
+			unset( $form['config']['prices'], $form['config']['timelinePercentages'] );
+		}
+
 		ob_start();
-		require dirname( $this->plugin_file ) . '/templates/form.php';
+		require dirname( $this->plugin_file ) . '/templates/' . ( $is_brief ? 'brief.php' : 'form.php' );
 		return (string) ob_get_clean();
 	}
 
@@ -137,6 +145,9 @@ final class FormShortcode {
 			'estimate'         => __( 'Starting at %s', 'quote-form' ),
 			'estimateEmpty'    => __( 'Select a service to see a starting price.', 'quote-form' ),
 			'servicesRequired' => __( 'Choose at least one service.', 'quote-form' ),
+			'needsRequired'    => __( 'Choose at least one thing you need help with.', 'quote-form' ),
+			'budgetRequired'   => __( 'Choose a budget range, or "Not sure yet".', 'quote-form' ),
+			'briefRequired'    => __( 'Tell me a little about the project.', 'quote-form' ),
 			'nameRequired'     => __( 'Enter your name.', 'quote-form' ),
 			'emailInvalid'     => __( 'Enter an email address like name@example.com.', 'quote-form' ),
 			'messageRequired'  => __( 'Tell me a little about what you need.', 'quote-form' ),

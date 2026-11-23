@@ -8,11 +8,15 @@
 namespace QuoteForm\Submission;
 
 use QuoteForm\Form\PriceEstimator;
+use QuoteForm\Form\ProjectBrief;
 use QuoteForm\Settings\Settings;
 
 /**
  * Cleans the submitted fields and reports one message per invalid field.
  * Messages match the form's own browser-side checks.
+ *
+ * Two forms post here: the quote form (priced services from the settings page) and the project brief
+ * (the ProjectBrief choices plus a budget and a required description).
  */
 final class SubmissionValidator {
 
@@ -33,22 +37,36 @@ final class SubmissionValidator {
 	 * Validates decoded JSON from the form.
 	 *
 	 * @param array<string, mixed> $input Request body.
-	 * @return array{values: array{services: list<string>, timeline: string, full_name: string, email: string, phone: ?string, company: ?string, message: ?string}, errors: array<string, string>}
+	 * @return array{values: array{is_brief: bool, services: list<string>, timeline: string, budget: ?string, full_name: string, email: string, phone: ?string, company: ?string, message: ?string}, errors: array<string, string>}
 	 */
 	public function validate( array $input ): array {
-		$errors = array();
+		$errors   = array();
+		$is_brief = ProjectBrief::FORM_TYPE === ( $input['form'] ?? null );
 
-		$offered_services = array_column( $this->settings->all()['services'], 'key' );
+		$offered_services = $is_brief
+			? array_keys( ProjectBrief::services() )
+			: array_column( $this->settings->all()['services'], 'key' );
 		$services         = $this->service_keys( $input['services'] ?? null );
 		if ( array() === $services ) {
-			$errors['services'] = __( 'Choose at least one service.', 'quote-form' );
+			$errors['services'] = $is_brief
+				? __( 'Choose at least one thing you need help with.', 'quote-form' )
+				: __( 'Choose at least one service.', 'quote-form' );
 		} elseif ( array_diff( $services, $offered_services ) !== array() ) {
 			$errors['services'] = __( 'Choose services from the list.', 'quote-form' );
 		}
 
-		$timeline = $this->text( $input, 'timeline' );
-		if ( ! array_key_exists( $timeline, PriceEstimator::TIMELINE_PERCENTAGES ) ) {
+		$offered_timelines = $is_brief ? ProjectBrief::timelines() : PriceEstimator::TIMELINE_PERCENTAGES;
+		$timeline          = $this->text( $input, 'timeline' );
+		if ( ! array_key_exists( $timeline, $offered_timelines ) ) {
 			$errors['timeline'] = __( 'Choose a timeline.', 'quote-form' );
+		}
+
+		$budget = null;
+		if ( $is_brief ) {
+			$budget = $this->text( $input, 'budget' );
+			if ( ! array_key_exists( $budget, ProjectBrief::budgets() ) ) {
+				$errors['budget'] = __( 'Choose a budget range, or "Not sure yet".', 'quote-form' );
+			}
 		}
 
 		$full_name = $this->text( $input, 'full_name' );
@@ -74,14 +92,18 @@ final class SubmissionValidator {
 		}
 
 		$message = sanitize_textarea_field( $this->raw_string( $input, 'message' ) );
-		if ( mb_strlen( $message ) > self::MAX_MESSAGE_LENGTH ) {
+		if ( $is_brief && '' === trim( $message ) ) {
+			$errors['message'] = __( 'Tell me a little about the project.', 'quote-form' );
+		} elseif ( mb_strlen( $message ) > self::MAX_MESSAGE_LENGTH ) {
 			$errors['message'] = $this->too_long_message( self::MAX_MESSAGE_LENGTH );
 		}
 
 		return array(
 			'values' => array(
+				'is_brief'  => $is_brief,
 				'services'  => $services,
 				'timeline'  => $timeline,
+				'budget'    => $budget,
 				'full_name' => $full_name,
 				'email'     => $email,
 				'phone'     => '' === $phone ? null : $phone,

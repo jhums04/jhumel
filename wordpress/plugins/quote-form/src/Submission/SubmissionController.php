@@ -62,7 +62,7 @@ final class SubmissionController {
 	}
 
 	/**
-	 * Validates, prices, and saves one submission.
+	 * Validates, prices (quote form only), and saves one submission.
 	 *
 	 * @param WP_REST_Request $request The request.
 	 */
@@ -113,7 +113,9 @@ final class SubmissionController {
 				'services'          => $values['services'],
 				'timeline'          => $values['timeline'],
 				'message'           => $values['message'],
-				'estimated_price'   => $estimator->estimate( $values['services'], $values['timeline'] ),
+				// The brief has no price list; its budget range does that job.
+				'estimated_price'   => $values['is_brief'] ? null : $estimator->estimate( $values['services'], $values['timeline'] ),
+				'budget'            => $values['budget'],
 				'submitted_at'      => gmdate( 'c' ),
 			)
 		);

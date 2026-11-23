@@ -204,6 +204,70 @@
 	font-weight: 700;
 }
 
+/*
+ * Project brief: choices as tap-friendly chips. The real checkbox or radio stays in the page (visually hidden)
+ * so keyboards, screen readers, and form validation work as usual; the chip shows its state.
+ */
+.quote-form__chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.quote-form__chip {
+	position: relative;
+	cursor: pointer;
+}
+
+.quote-form__chip-input {
+	position: absolute;
+	opacity: 0;
+	inset: 0;
+	margin: 0;
+	cursor: pointer;
+}
+
+.quote-form__chip span {
+	display: inline-flex;
+	align-items: center;
+	min-height: 2.75rem;
+	padding: 0 1rem;
+	border: 1px solid var(--wp--preset--color--gray-200, #e5e5e5);
+	border-radius: 999px;
+	background-color: var(--wp--preset--color--white, #fff);
+	transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.quote-form__chip:hover span {
+	border-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+}
+
+.quote-form__chip-input:checked + span {
+	border-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+	background-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+	color: var(--wp--preset--color--white, #fff);
+}
+
+.quote-form__chip-input:focus-visible + span {
+	outline: 2px solid var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+	outline-offset: 2px;
+}
+
+.quote-form__group:has(.quote-form__error:not([hidden])) .quote-form__chip span {
+	border-color: var(--wp--preset--color--error, #b91c1c);
+}
+
+.quote-form__input::placeholder {
+	color: var(--wp--preset--color--gray-600, #525252);
+	opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.quote-form__chip span {
+		transition: none;
+	}
+}
+
 @container (min-width: 32rem) {
 	.quote-form__row {
 		grid-template-columns: 1fr 1fr;

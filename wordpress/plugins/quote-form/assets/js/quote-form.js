@@ -1,5 +1,5 @@
 /**
- * Quote form: live price estimate, validation, and sending.
+ * Quote form and project brief: live price estimate (quote form only), validation, and sending.
  *
  * The estimate here is display only. The server recalculates it with PriceEstimator.
  */
@@ -7,6 +7,24 @@
 	'use strict';
 
 	const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+	// Turnstile (the spam check) is loaded once, the first time any form nears the screen or is focused.
+	// Until then the page does not download it, which keeps the page light for visitors who never reach a form.
+	let turnstileLoading = null;
+
+	function loadTurnstile( scriptUrl ) {
+		if ( turnstileLoading === null ) {
+			turnstileLoading = new Promise( ( resolve, reject ) => {
+				const script = document.createElement( 'script' );
+				script.src = scriptUrl + '?render=explicit';
+				script.async = true;
+				script.onload = () => resolve( window.turnstile );
+				script.onerror = reject;
+				document.head.appendChild( script );
+			} );
+		}
+		return turnstileLoading;
+	}
 
 	function formatDollars( cents ) {
 		const hasCents = cents % 100 !== 0;
@@ -21,6 +39,7 @@
 
 	function initializeQuoteForm( form ) {
 		const config = JSON.parse( form.dataset.config );
+		const isBrief = config.formType === 'brief';
 		const wrapper = form.closest( '.quote-form-wrapper' );
 		const estimateOutput = form.querySelector( '[data-role="estimate"]' );
 		const statusOutput = form.querySelector( '[data-role="status"]' );
@@ -34,8 +53,10 @@
 			);
 		}
 
+		// A field the form does not have (the brief has no phone) reads as empty. Radio groups read their checked value.
 		function fieldValue( name ) {
-			return form.elements[ name ].value.trim();
+			const field = form.elements[ name ];
+			return field ? field.value.trim() : '';
 		}
 
 		// Same formula as PriceEstimator: whole dollars times a percentage gives cents.
@@ -49,6 +70,10 @@
 		}
 
 		function updateEstimate() {
+			if ( estimateOutput === null ) {
+				return;
+			}
+
 			const serviceKeys = selectedServiceKeys();
 
 			if ( serviceKeys.length === 0 ) {
@@ -98,7 +123,7 @@
 		}
 
 		function clearErrors() {
-			[ 'services', 'full_name', 'email', 'message' ].forEach( clearFieldError );
+			[ 'services', 'budget', 'full_name', 'email', 'message' ].forEach( clearFieldError );
 			statusOutput.hidden = true;
 			statusOutput.textContent = '';
 		}
@@ -126,7 +151,10 @@
 			const errors = {};
 
 			if ( selectedServiceKeys().length === 0 ) {
-				errors.services = config.messages.servicesRequired;
+				errors.services = isBrief ? config.messages.needsRequired : config.messages.servicesRequired;
+			}
+			if ( isBrief && fieldValue( 'budget' ) === '' ) {
+				errors.budget = config.messages.budgetRequired;
 			}
 			if ( fieldValue( 'full_name' ) === '' ) {
 				errors.full_name = config.messages.nameRequired;
@@ -135,10 +163,39 @@
 				errors.email = config.messages.emailInvalid;
 			}
 			if ( form.elements.message.hasAttribute( 'data-required' ) && fieldValue( 'message' ) === '' ) {
-				errors.message = config.messages.messageRequired;
+				errors.message = isBrief ? config.messages.briefRequired : config.messages.messageRequired;
 			}
 
 			return errors;
+		}
+
+		const turnstileWidget = form.querySelector( '.cf-turnstile' );
+		let isTurnstileRendered = false;
+
+		function renderTurnstile() {
+			if ( turnstileWidget === null || isTurnstileRendered ) {
+				return;
+			}
+			isTurnstileRendered = true;
+			loadTurnstile( config.turnstileScript )
+				.then( ( turnstile ) => turnstile.render( turnstileWidget, { sitekey: turnstileWidget.dataset.sitekey } ) )
+				.catch( () => {
+					isTurnstileRendered = false;
+				} );
+		}
+
+		if ( turnstileWidget !== null ) {
+			const observer = new IntersectionObserver(
+				( entries ) => {
+					if ( entries.some( ( entry ) => entry.isIntersecting ) ) {
+						observer.disconnect();
+						renderTurnstile();
+					}
+				},
+				{ rootMargin: '600px 0px' }
+			);
+			observer.observe( form );
+			form.addEventListener( 'focusin', renderTurnstile, { once: true } );
 		}
 
 		function turnstileToken() {
@@ -172,10 +229,12 @@
 					'X-WP-Nonce': config.restNonce,
 				},
 				body: JSON.stringify( {
+					form: config.formType,
 					organization: fieldValue( 'organization' ),
 					nonce: fieldValue( 'nonce' ),
 					services: selectedServiceKeys(),
 					timeline: fieldValue( 'timeline' ),
+					budget: fieldValue( 'budget' ),
 					full_name: fieldValue( 'full_name' ),
 					email: fieldValue( 'email' ),
 					phone: fieldValue( 'phone' ),
@@ -214,7 +273,8 @@
 				return;
 			}
 
-			if ( form.querySelector( '.cf-turnstile' ) && turnstileToken() === '' ) {
+			if ( turnstileWidget !== null && turnstileToken() === '' ) {
+				renderTurnstile();
 				showStatus( config.messages.turnstilePending );
 				return;
 			}
