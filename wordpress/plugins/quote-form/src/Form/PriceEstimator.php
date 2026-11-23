@@ -19,7 +19,7 @@ final class PriceEstimator {
 	/**
 	 * Timeline multipliers as percentages, so the math stays in whole numbers.
 	 */
-	private const TIMELINE_PERCENTAGES = array(
+	public const TIMELINE_PERCENTAGES = array(
 		'standard' => 100,
 		'rush'     => 125,
 	);

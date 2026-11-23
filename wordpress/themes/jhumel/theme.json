@@ -17,7 +17,11 @@
 				{ "slug": "gray-50", "name": "Gray 50", "color": "#F7F7F7" },
 				{ "slug": "white", "name": "White", "color": "#FFFFFF" },
 				{ "slug": "blue", "name": "Blue", "color": "#1D4ED8" },
-				{ "slug": "blue-dark", "name": "Blue Dark", "color": "#1E3A8A" }
+				{ "slug": "blue-dark", "name": "Blue Dark", "color": "#1E3A8A" },
+				{ "slug": "error", "name": "Error", "color": "#B91C1C" },
+				{ "slug": "error-background", "name": "Error Background", "color": "#FEF2F2" },
+				{ "slug": "success", "name": "Success", "color": "#15803D" },
+				{ "slug": "success-background", "name": "Success Background", "color": "#F0FDF4" }
 			]
 		},
 		"layout": { "contentSize": "720px", "wideSize": "1080px" },
