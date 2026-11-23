@@ -98,6 +98,8 @@ final class FormShortcode {
 			'turnstile_site_key'  => $settings['turnstile_site_key'],
 			'config'              => array(
 				'endpoint'            => rest_url( 'quote-form/v1/submissions' ),
+				// Keeps logged-in users logged in for the request, so the organization nonce still matches.
+				'restNonce'           => wp_create_nonce( 'wp_rest' ),
 				'prices'              => array_column( $settings['services'], 'price', 'key' ),
 				'timelinePercentages' => PriceEstimator::TIMELINE_PERCENTAGES,
 				'messages'            => $this->script_messages(),

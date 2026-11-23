@@ -167,7 +167,10 @@
 		async function sendRequest() {
 			const response = await fetch( config.endpoint, {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					'X-WP-Nonce': config.restNonce,
+				},
 				body: JSON.stringify( {
 					organization: fieldValue( 'organization' ),
 					nonce: fieldValue( 'nonce' ),
@@ -187,13 +190,15 @@
 				return;
 			}
 
+			const body = await response.json().catch( () => ( {} ) );
+
 			// 422 carries one message per field, shown the same way as browser-side errors.
-			if ( response.status === 422 ) {
-				const body = await response.json();
+			// Other refusals (expired form, too many requests, spam check down) carry one message.
+			if ( response.status === 422 && body.errors ) {
 				Object.entries( body.errors ).forEach( ( [ field, message ] ) => showFieldError( field, message ) );
 				focusFirstError();
 			} else {
-				showStatus( config.messages.sendFailed );
+				showStatus( typeof body.message === 'string' ? body.message : config.messages.sendFailed );
 			}
 			resetTurnstile();
 		}
