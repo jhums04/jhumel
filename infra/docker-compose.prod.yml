@@ -1,0 +1,151 @@
+# Production stack for the VPS: Caddy (HTTPS) in front of WordPress and n8n, each with its own database.
+# Only Caddy publishes ports; the databases are reachable only inside this Docker network.
+#
+#   docker compose -f infra/docker-compose.prod.yml --env-file infra/.env.prod up -d
+#
+# Every image is pinned so a restart never upgrades anything by surprise, and a missing setting stops the start. infra/deploy.sh is the normal way to run it.
+name: lead-engine
+
+services:
+  caddy:
+    image: caddy:2.11.9-alpine
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+      - "${HTTPS_PORT:-443}:443/udp"
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN in infra/.env.prod}
+      N8N_DOMAIN: ${N8N_DOMAIN:?set N8N_DOMAIN in infra/.env.prod}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in infra/.env.prod}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - wordpress
+      - n8n
+
+  wordpress:
+    image: wordpress:7.1.5-php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?set WORDPRESS_DB_PASSWORD in infra/.env.prod}
+      # Unique keys and salts, so sessions and nonces cannot be forged across installs.
+      WORDPRESS_AUTH_KEY: ${WORDPRESS_AUTH_KEY:?set WORDPRESS_AUTH_KEY in infra/.env.prod}
+      WORDPRESS_SECURE_AUTH_KEY: ${WORDPRESS_SECURE_AUTH_KEY:?set WORDPRESS_SECURE_AUTH_KEY in infra/.env.prod}
+      WORDPRESS_LOGGED_IN_KEY: ${WORDPRESS_LOGGED_IN_KEY:?set WORDPRESS_LOGGED_IN_KEY in infra/.env.prod}
+      WORDPRESS_NONCE_KEY: ${WORDPRESS_NONCE_KEY:?set WORDPRESS_NONCE_KEY in infra/.env.prod}
+      WORDPRESS_AUTH_SALT: ${WORDPRESS_AUTH_SALT:?set WORDPRESS_AUTH_SALT in infra/.env.prod}
+      WORDPRESS_SECURE_AUTH_SALT: ${WORDPRESS_SECURE_AUTH_SALT:?set WORDPRESS_SECURE_AUTH_SALT in infra/.env.prod}
+      WORDPRESS_LOGGED_IN_SALT: ${WORDPRESS_LOGGED_IN_SALT:?set WORDPRESS_LOGGED_IN_SALT in infra/.env.prod}
+      WORDPRESS_NONCE_SALT: ${WORDPRESS_NONCE_SALT:?set WORDPRESS_NONCE_SALT in infra/.env.prod}
+      JHUMEL_DASHBOARD_URL: ${DASHBOARD_URL:?set DASHBOARD_URL in infra/.env.prod}
+      JHUMEL_DEMO_EMAIL: ${DEMO_EMAIL:?set DEMO_EMAIL in infra/.env.prod}
+      JHUMEL_DEMO_PASSWORD: ${DEMO_PASSWORD:?set DEMO_PASSWORD in infra/.env.prod}
+      # $$ is a literal $ for PHP; a single $ would be read by Compose as a variable.
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_ENVIRONMENT_TYPE', 'production' );
+        define( 'DISALLOW_FILE_EDIT', true );
+        // A server cron runs scheduled tasks (the form's delivery retries) every 5 minutes; see SERVER_SETUP.md.
+        define( 'DISABLE_WP_CRON', true );
+        define( 'JHUMEL_DASHBOARD_URL', getenv( 'JHUMEL_DASHBOARD_URL' ) );
+        define( 'JHUMEL_DEMO_EMAIL', getenv( 'JHUMEL_DEMO_EMAIL' ) );
+        define( 'JHUMEL_DEMO_PASSWORD', getenv( 'JHUMEL_DEMO_PASSWORD' ) );
+        // Behind Caddy. WordPress is reachable only through Caddy, and Caddy replaces any X-Forwarded-For sent by
+        // the visitor, so its first entry is the real visitor IP. The form's rate limiter relies on this.
+        if ( isset( $$_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $$_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
+          $$_SERVER['HTTPS'] = 'on';
+        }
+        if ( ! empty( $$_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+          $$_SERVER['REMOTE_ADDR'] = trim( explode( ',', $$_SERVER['HTTP_X_FORWARDED_FOR'] )[0] );
+        }
+    volumes:
+      - wordpress_data:/var/www/html
+      # The theme and plugin come straight from the repo checkout, read-only. deploy.sh installs the plugin's
+      # production Composer packages first.
+      - ../wordpress/themes/jhumel:/var/www/html/wp-content/themes/jhumel:ro
+      - ../wordpress/plugins/quote-form:/var/www/html/wp-content/plugins/quote-form:ro
+
+  mariadb:
+    image: mariadb:11.4.13
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?set WORDPRESS_DB_PASSWORD in infra/.env.prod}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?set MARIADB_ROOT_PASSWORD in infra/.env.prod}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.48.7
+    restart: unless-stopped
+    depends_on:
+      n8n-postgres:
+        condition: service_healthy
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: n8n-postgres
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: n8n
+      DB_POSTGRESDB_PASSWORD: ${N8N_DB_PASSWORD:?set N8N_DB_PASSWORD in infra/.env.prod}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?set N8N_ENCRYPTION_KEY in infra/.env.prod}
+      N8N_HOST: ${N8N_DOMAIN:?set N8N_DOMAIN in infra/.env.prod}
+      N8N_PROTOCOL: https
+      N8N_PROXY_HOPS: "1"
+      WEBHOOK_URL: https://${N8N_DOMAIN:?set N8N_DOMAIN in infra/.env.prod}/
+      N8N_EDITOR_BASE_URL: https://${N8N_DOMAIN:?set N8N_DOMAIN in infra/.env.prod}/
+      GENERIC_TIMEZONE: Asia/Manila
+      TZ: Asia/Manila
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      # The privacy policy promises execution logs are deleted after 14 days (336 hours).
+      EXECUTIONS_DATA_PRUNE: "true"
+      EXECUTIONS_DATA_MAX_AGE: "336"
+      # The workflows read their settings with $env, and the signature check uses Node's crypto module.
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+      NODE_FUNCTION_ALLOW_BUILTIN: crypto
+      LEAD_WEBHOOK_SECRET: ${LEAD_WEBHOOK_SECRET:?set LEAD_WEBHOOK_SECRET in infra/.env.prod}
+      SUPABASE_URL: ${SUPABASE_URL:?set SUPABASE_URL in infra/.env.prod}
+      SUPABASE_PUBLISHABLE_KEY: ${SUPABASE_PUBLISHABLE_KEY:?set SUPABASE_PUBLISHABLE_KEY in infra/.env.prod}
+      DASHBOARD_URL: ${DASHBOARD_URL:?set DASHBOARD_URL in infra/.env.prod}
+      TELEGRAM_PRIVATE_CHAT_ID: ${TELEGRAM_PRIVATE_CHAT_ID:?set TELEGRAM_PRIVATE_CHAT_ID in infra/.env.prod}
+      TELEGRAM_DEMO_CHAT_ID: ${TELEGRAM_DEMO_CHAT_ID:?set TELEGRAM_DEMO_CHAT_ID in infra/.env.prod}
+      FOLLOW_UP_FROM: ${FOLLOW_UP_FROM:?set FOLLOW_UP_FROM in infra/.env.prod}
+      FOLLOW_UP_REPLY_TO: ${FOLLOW_UP_REPLY_TO:?set FOLLOW_UP_REPLY_TO in infra/.env.prod}
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  n8n-postgres:
+    image: postgres:16.16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: n8n
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: ${N8N_DB_PASSWORD:?set N8N_DB_PASSWORD in infra/.env.prod}
+    volumes:
+      - n8n_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U n8n -d n8n"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  caddy_data:
+  caddy_config:
+  wordpress_data:
+  mariadb_data:
+  n8n_data:
+  n8n_postgres_data:

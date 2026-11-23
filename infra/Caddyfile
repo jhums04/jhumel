@@ -1,0 +1,37 @@
+# HTTPS for both sites. Caddy gets and renews certificates from Let's Encrypt on its own and redirects
+# http to https. Domains come from infra/.env.prod.
+{
+	email {$ACME_EMAIL}
+}
+
+(security_headers) {
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		-Server
+	}
+}
+
+www.{$SITE_DOMAIN} {
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}
+
+{$SITE_DOMAIN} {
+	import security_headers
+	header X-Frame-Options "SAMEORIGIN"
+	encode zstd gzip
+
+	# Pingbacks are switched off in the theme; refusing XML-RPC outright also stops password-guessing through it.
+	respond /xmlrpc.php 403
+
+	reverse_proxy wordpress:80
+}
+
+{$N8N_DOMAIN} {
+	import security_headers
+	encode zstd gzip
+	# The editor is protected by n8n's own login; webhooks are public by design and verify their callers.
+	reverse_proxy n8n:5678
+}

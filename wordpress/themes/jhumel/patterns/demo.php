@@ -6,12 +6,13 @@
  * Inserter: no
  *
  * A PHP pattern because the dashboard address and the demo password differ between local and production
- * (JHUMEL_DASHBOARD_URL and JHUMEL_DEMO_PASSWORD in wp-config.php).
+ * (JHUMEL_DASHBOARD_URL, JHUMEL_DEMO_EMAIL, and JHUMEL_DEMO_PASSWORD in wp-config.php).
  *
  * @package Jhumel
  */
 
-$jhumel_dashboard_url = defined( 'JHUMEL_DASHBOARD_URL' ) ? JHUMEL_DASHBOARD_URL : 'https://app.jhumel.dev';
+$jhumel_dashboard_url = defined( 'JHUMEL_DASHBOARD_URL' ) ? JHUMEL_DASHBOARD_URL : 'https://app.bongancisojhumel.com';
+$jhumel_demo_email    = defined( 'JHUMEL_DEMO_EMAIL' ) ? JHUMEL_DEMO_EMAIL : 'demo@jhumel.dev';
 $jhumel_demo_password = defined( 'JHUMEL_DEMO_PASSWORD' ) ? JHUMEL_DEMO_PASSWORD : 'demo-password';
 ?>
 <!-- wp:group {"tagName":"section","anchor":"demo","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}}},"backgroundColor":"gray-50","layout":{"type":"constrained"}} -->
@@ -51,7 +52,7 @@ $jhumel_demo_password = defined( 'JHUMEL_DEMO_PASSWORD' ) ? JHUMEL_DEMO_PASSWORD
 				<!-- /wp:paragraph -->
 
 				<!-- wp:paragraph {"fontSize":"small","fontFamily":"mono"} -->
-				<p class="has-mono-font-family has-small-font-size">Email: demo@jhumel.dev<br>Password: <?php echo esc_html( $jhumel_demo_password ); ?></p>
+				<p class="has-mono-font-family has-small-font-size">Email: <?php echo esc_html( $jhumel_demo_email ); ?><br>Password: <?php echo esc_html( $jhumel_demo_password ); ?></p>
 				<!-- /wp:paragraph -->
 			</div>
 			<!-- /wp:group -->
