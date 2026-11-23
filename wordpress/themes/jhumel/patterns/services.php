@@ -77,10 +77,10 @@ $jhumel_prices              = array_column( $jhumel_quote_form_settings['service
 			<!-- /wp:group -->
 			<?php endforeach; ?>
 
-			<!-- wp:group {"style":{"border":{"radius":"16px"},"spacing":{"padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30","right":"var:preset|spacing|30"},"blockGap":"var:preset|spacing|20"},"elements":{"link":{"color":{"text":"var:preset|color|white"}}}},"backgroundColor":"blue","textColor":"white","className":"lift-card","layout":{"type":"default"}} -->
-			<div class="wp-block-group lift-card has-white-color has-blue-background-color has-text-color has-background has-link-color" style="border-radius:16px;padding-top:var(--wp--preset--spacing--30);padding-right:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30)">
-				<!-- wp:heading {"level":3,"textColor":"white"} -->
-				<h3 class="wp-block-heading has-white-color has-text-color"><?php esc_html_e( 'Not sure which one fits?', 'jhumel' ); ?></h3>
+			<!-- wp:group {"style":{"border":{"radius":"16px"},"spacing":{"padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30","right":"var:preset|spacing|30"},"blockGap":"var:preset|spacing|20"},"elements":{"link":{"color":{"text":"var:preset|color|navy"}}}},"backgroundColor":"amber-50","textColor":"black","className":"lift-card","layout":{"type":"default"}} -->
+			<div class="wp-block-group lift-card has-black-color has-amber-50-background-color has-text-color has-background has-link-color" style="border-radius:16px;padding-top:var(--wp--preset--spacing--30);padding-right:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30)">
+				<!-- wp:heading {"level":3} -->
+				<h3 class="wp-block-heading"><?php esc_html_e( 'Not sure which one fits?', 'jhumel' ); ?></h3>
 				<!-- /wp:heading -->
 
 				<!-- wp:paragraph -->

@@ -1,4 +1,7 @@
 /*
+ * Themes can set --quote-form-accent, --quote-form-accent-hover, --quote-form-accent-hover-text, and
+ * --quote-form-button-radius to match their own buttons, focus rings, and checkboxes.
+ *
  * Quote form. Colors and sizes come from the theme's presets when present,
  * with fallbacks so the form also works on any other theme.
  */
@@ -58,12 +61,12 @@
 .quote-form__input:focus,
 .quote-form__checkbox:focus-visible,
 .quote-form__submit:focus-visible {
-	outline: 2px solid var(--wp--preset--color--blue, #1d4ed8);
+	outline: 2px solid var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
 	outline-offset: 2px;
 }
 
 .quote-form__input:focus {
-	border-color: var(--wp--preset--color--blue, #1d4ed8);
+	border-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
 }
 
 /* A 2px red edge without changing the field's size: 1px border plus a 1px inset shadow. */
@@ -94,14 +97,14 @@
 }
 
 .quote-form__option:has(:checked) {
-	border-color: var(--wp--preset--color--blue, #1d4ed8);
+	border-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
 }
 
 .quote-form__checkbox {
 	width: 1.125rem;
 	height: 1.125rem;
 	margin: 0;
-	accent-color: var(--wp--preset--color--blue, #1d4ed8);
+	accent-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
 }
 
 .quote-form__option-label {
@@ -159,8 +162,8 @@
 	justify-self: start;
 	padding: 0.75rem 1.25rem;
 	border: 0;
-	border-radius: 4px;
-	background-color: var(--wp--preset--color--blue, #1d4ed8);
+	border-radius: var(--quote-form-button-radius, 4px);
+	background-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
 	color: var(--wp--preset--color--white, #fff);
 	font: inherit;
 	font-weight: 600;
@@ -168,7 +171,8 @@
 }
 
 .quote-form__submit:hover {
-	background-color: var(--wp--preset--color--blue-dark, #1e3a8a);
+	background-color: var(--quote-form-accent-hover, var(--wp--preset--color--blue-dark, #1e3a8a));
+	color: var(--quote-form-accent-hover-text, var(--wp--preset--color--white, #fff));
 }
 
 .quote-form__submit:disabled {

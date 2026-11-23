@@ -37,7 +37,7 @@
 
 		<!-- wp:column {"width":"60%"} -->
 		<div class="wp-block-column" style="flex-basis:60%">
-			<!-- wp:group {"style":{"border":{"radius":"16px"},"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"shadow":"var:preset|shadow|soft","elements":{"link":{"color":{"text":"var:preset|color|blue"}}}},"backgroundColor":"white","textColor":"black","className":"form-card","layout":{"type":"default"}} -->
+			<!-- wp:group {"style":{"border":{"radius":"16px"},"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"shadow":"var:preset|shadow|soft","elements":{"link":{"color":{"text":"var:preset|color|navy"}}}},"backgroundColor":"white","textColor":"black","className":"form-card","layout":{"type":"default"}} -->
 			<div class="wp-block-group form-card has-black-color has-white-background-color has-text-color has-background has-link-color" style="border-radius:16px;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40);box-shadow:var(--wp--preset--shadow--soft)">
 			<!-- wp:html -->
 			<?php
