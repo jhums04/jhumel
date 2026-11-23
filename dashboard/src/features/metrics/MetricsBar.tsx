@@ -11,7 +11,7 @@ type StatTileProps = {
 
 function StatTile({ label, value, emptyText, detail }: StatTileProps) {
   return (
-    <div className="rounded border border-gray-200 p-4">
+    <div className="rounded-xl border border-gray-200 bg-white p-4">
       <dt className="text-sm text-gray-600">{label}</dt>
       {value === null ? (
         <dd className="mt-1 py-1 font-semibold text-gray-600">{emptyText}</dd>

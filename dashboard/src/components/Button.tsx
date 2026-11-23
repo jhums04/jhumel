@@ -6,15 +6,15 @@ type ButtonProps = Omit<ComponentProps<'button'>, 'type'> & {
 }
 
 const variantClassNames = {
-  primary: 'bg-blue text-white hover:bg-blue-dark',
-  secondary: 'border border-black text-black hover:bg-black hover:text-white',
+  primary: 'bg-navy text-white hover:bg-amber hover:text-black',
+  secondary: 'border border-black text-black hover:border-navy hover:bg-amber-50 hover:text-navy',
 }
 
 export function Button({ type = 'button', variant = 'primary', className = '', ...buttonProps }: ButtonProps) {
   return (
     <button
       type={type === 'submit' ? 'submit' : 'button'}
-      className={`inline-flex items-center justify-center rounded px-5 py-3 font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${variantClassNames[variant]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-full px-5 py-3 font-semibold transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-60 ${variantClassNames[variant]} ${className}`}
       {...buttonProps}
     />
   )

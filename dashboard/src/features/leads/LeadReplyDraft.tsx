@@ -4,7 +4,7 @@ import { describeSendFollowUpError } from '../followUps/sendFollowUp'
 import { useSendFollowUp } from '../followUps/useSendFollowUp'
 import type { LeadDetails } from './leadsApi'
 
-const fieldClassName = 'mt-2 block w-full rounded border border-gray-200 px-3 py-3 text-black focus:border-blue'
+const fieldClassName = 'mt-2 block w-full rounded-lg border border-gray-200 bg-white px-3 py-3 text-black focus:border-navy'
 
 type LeadReplyDraftProps = {
   lead: Pick<LeadDetails, 'id' | 'email' | 'draft_subject' | 'draft_body'>

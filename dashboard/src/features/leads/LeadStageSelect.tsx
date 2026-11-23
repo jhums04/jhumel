@@ -23,7 +23,7 @@ export function LeadStageSelect({ lead }: { lead: LeadDetails }) {
             updateLeadStage.mutate({ lead, stage: event.target.value })
           }
         }}
-        className="mt-2 min-h-11 rounded border border-gray-200 bg-white px-3 text-base"
+        className="mt-2 min-h-11 rounded-lg border border-gray-200 bg-white px-3 text-base"
       >
         {leadStages.map((stage) => (
           <option key={stage} value={stage}>

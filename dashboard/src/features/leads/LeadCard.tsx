@@ -34,7 +34,7 @@ export function LeadCard({ lead, currentTime }: LeadCardProps) {
         }
       }}
       aria-label={`${lead.full_name}${lead.company === null ? '' : `, ${lead.company}`}`}
-      className={`cursor-grab rounded border bg-white p-4 ${isNewArrival ? 'border-blue' : 'border-gray-200'} ${isDragging ? 'opacity-40' : ''}`}
+      className={`cursor-grab rounded-lg border bg-white p-4 ${isNewArrival ? 'border-amber ring-2 ring-amber-50' : 'border-gray-200'} ${isDragging ? 'opacity-40' : ''}`}
     >
       <LeadCardDetails lead={lead} currentTime={currentTime} />
     </li>

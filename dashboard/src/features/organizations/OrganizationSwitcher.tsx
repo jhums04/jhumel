@@ -19,7 +19,7 @@ export function OrganizationSwitcher() {
         value={currentOrganization.slug}
         onChange={(event) => selectOrganization(event.target.value)}
         // 16px text on phones: iOS Safari zooms the page into any field with smaller text. 44px tall for a finger.
-        className="min-h-11 rounded border border-gray-200 bg-white px-2 text-base sm:text-sm"
+        className="min-h-11 rounded-lg border border-gray-200 bg-white px-2 text-base sm:text-sm"
       >
         {organizations.data.map((organization) => (
           <option key={organization.id} value={organization.slug}>

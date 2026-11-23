@@ -8,9 +8,21 @@ type ActivityTimelineProps = {
   leadCreatedAt: string
 }
 
-function TimelineEntry({ text, at, currentTime }: { text: string; at: string; currentTime: Date }) {
+type TimelineEntryProps = {
+  text: string
+  at: string
+  currentTime: Date
+  isLatest: boolean
+}
+
+// A dot per entry joined by a line to the next one; the latest dot is amber so the newest change stands out.
+function TimelineEntry({ text, at, currentTime, isLatest }: TimelineEntryProps) {
   return (
-    <li className="border-l-2 border-gray-200 pl-4">
+    <li className="relative pb-5 pl-6 after:absolute after:top-4 after:bottom-0 after:left-[5px] after:w-0.5 after:bg-gray-200 last:pb-0 last:after:hidden">
+      <span
+        aria-hidden="true"
+        className={`absolute top-1.5 left-0 z-10 size-3 rounded-full ring-4 ring-white ${isLatest ? 'bg-amber' : 'bg-gray-200'}`}
+      />
       <p>{text}</p>
       <p className="text-sm text-gray-600">
         <time dateTime={at} title={new Date(at).toLocaleString()}>
@@ -26,16 +38,22 @@ export function ActivityTimeline({ activities, leadCreatedAt }: ActivityTimeline
   const currentTime = useCurrentTime()
 
   return (
-    <ol className="space-y-4">
-      {activities.map((activity) => (
+    <ol>
+      {activities.map((activity, index) => (
         <TimelineEntry
           key={activity.id}
           text={describeActivity(activity)}
           at={activity.created_at}
           currentTime={currentTime}
+          isLatest={index === 0}
         />
       ))}
-      <TimelineEntry text="Lead received from the website" at={leadCreatedAt} currentTime={currentTime} />
+      <TimelineEntry
+        text="Lead received from the website"
+        at={leadCreatedAt}
+        currentTime={currentTime}
+        isLatest={activities.length === 0}
+      />
     </ol>
   )
 }

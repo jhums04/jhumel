@@ -87,7 +87,7 @@ export function PipelineBoard({ leads, onMoveLead }: PipelineBoardProps) {
 
       <DragOverlay>
         {draggedLead !== undefined && (
-          <div className="cursor-grabbing rounded border border-blue bg-white p-4">
+          <div className="cursor-grabbing rounded-lg border border-navy bg-white p-4 shadow-lg">
             <LeadCardDetails lead={draggedLead} currentTime={currentTime} />
           </div>
         )}

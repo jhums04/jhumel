@@ -45,7 +45,7 @@ async function signInWithPassword(credentials: Credentials): Promise<void> {
 }
 
 const inputClassName =
-  'mt-2 block w-full rounded border border-gray-200 px-3 py-3 text-black focus:border-blue'
+  'mt-2 block w-full rounded-lg border border-gray-200 bg-white px-3 py-3 text-black focus:border-navy'
 
 export function LoginPage() {
   const sessionState = useSession()
@@ -85,7 +85,7 @@ export function LoginPage() {
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           {signIn.isError && (
-            <p role="alert" className="rounded border border-error bg-error-background px-4 py-3 text-sm text-error">
+            <p role="alert" className="rounded-lg border border-error bg-error-background px-4 py-3 text-sm text-error">
               {describeSignInError(signIn.error)}
             </p>
           )}

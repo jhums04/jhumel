@@ -1,23 +1,17 @@
 import type { ReactNode } from 'react'
 import { formatCurrency } from '../../lib/format'
+import { DrawerCard } from './DrawerCard'
 import type { LeadDetails as LeadDetailsData } from './leadsApi'
 import { LeadReplyDraft } from './LeadReplyDraft'
 import { LeadStageSelect } from './LeadStageSelect'
-import { ScoreBadge } from './ScoreBadge'
 import { getBudgetLabel, getServiceLabel, getTimelineLabel } from './serviceLabels'
 
-function DetailSection({ title, children }: { title: string; children: ReactNode }) {
-  return (
-    <section className="border-t border-gray-200 px-6 py-6">
-      <h3 className="mb-4 text-sm font-semibold text-gray-600">{title}</h3>
-      {children}
-    </section>
-  )
-}
+const contactLinkClassName =
+  'inline-flex min-h-11 max-w-full items-center rounded-full border border-gray-200 px-4 font-semibold text-navy break-all hover:border-navy hover:bg-amber-50'
 
 function DetailRow({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="grid grid-cols-[7rem_1fr] gap-3 py-1">
+    <div className="grid grid-cols-[6.5rem_1fr] gap-3 py-1.5">
       <dt className="text-gray-600">{label}</dt>
       <dd className="min-w-0 break-words">{children}</dd>
     </div>
@@ -25,51 +19,69 @@ function DetailRow({ label, children }: { label: string; children: ReactNode }) 
 }
 
 export function LeadDetails({ lead }: { lead: LeadDetailsData }) {
-  const submittedAt = new Date(lead.created_at)
+  const scoreLabel = lead.score === null ? null : `${lead.score.charAt(0).toUpperCase()}${lead.score.slice(1)}`
 
   return (
     <>
-      <DetailSection title="Status">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <LeadStageSelect lead={lead} />
-          <ScoreBadge score={lead.score} />
-        </div>
-        {lead.score_reason !== null && <p className="mt-3">{lead.score_reason}</p>}
-      </DetailSection>
+      <DrawerCard title="Status">
+        <LeadStageSelect lead={lead} />
+        {lead.score_reason !== null && scoreLabel !== null && (
+          <figure className="mt-5 rounded-r-xl border-l-4 border-amber bg-amber-50/60 px-4 py-3">
+            <figcaption className="text-sm font-semibold text-amber-dark">Why the AI scored it {scoreLabel}</figcaption>
+            <blockquote className="mt-1 font-serif text-lg leading-snug">{lead.score_reason}</blockquote>
+          </figure>
+        )}
+      </DrawerCard>
 
-      <DetailSection title="Request">
-        <dl>
-          <DetailRow label="Email">
-            <a href={`mailto:${lead.email}`} className="text-blue underline hover:text-blue-dark">
-              {lead.email}
-            </a>
-          </DetailRow>
+      <DrawerCard title="Contact">
+        <div className="flex flex-wrap gap-2">
+          <a href={`mailto:${lead.email}`} className={contactLinkClassName}>
+            {lead.email}
+          </a>
           {lead.phone !== null && (
-            <DetailRow label="Phone">
-              <a href={`tel:${lead.phone}`} className="text-blue underline hover:text-blue-dark">
-                {lead.phone}
-              </a>
-            </DetailRow>
+            <a href={`tel:${lead.phone}`} className={contactLinkClassName}>
+              {lead.phone}
+            </a>
           )}
-          <DetailRow label="Services">
-            {lead.services.length === 0 ? 'None selected' : lead.services.map(getServiceLabel).join(', ')}
-          </DetailRow>
+        </div>
+      </DrawerCard>
+
+      <DrawerCard title="Request">
+        {lead.services.length > 0 && (
+          <ul aria-label="Services" className="mb-4 flex flex-wrap gap-2">
+            {lead.services.map((service) => (
+              <li key={service} className="rounded-full bg-gray-50 px-3 py-1 text-sm font-semibold">
+                {getServiceLabel(service)}
+              </li>
+            ))}
+          </ul>
+        )}
+        <dl>
           {lead.timeline !== null && <DetailRow label="Timeline">{getTimelineLabel(lead.timeline)}</DetailRow>}
           {lead.budget !== null && <DetailRow label="Budget">{getBudgetLabel(lead.budget)}</DetailRow>}
           {lead.estimated_price !== null && (
             <DetailRow label="Estimate">{formatCurrency(lead.estimated_price)}</DetailRow>
           )}
           <DetailRow label="Submitted">
-            <time dateTime={lead.created_at}>{submittedAt.toLocaleString()}</time>
+            <time dateTime={lead.created_at}>{new Date(lead.created_at).toLocaleString()}</time>
           </DetailRow>
         </dl>
-        {lead.message !== null && <p className="mt-4 whitespace-pre-line">{lead.message}</p>}
-      </DetailSection>
+        {lead.message !== null && (
+          <blockquote className="mt-4 rounded-xl bg-paper px-4 py-3 whitespace-pre-line">{lead.message}</blockquote>
+        )}
+      </DrawerCard>
 
-      <DetailSection title="Reply draft">
+      <DrawerCard
+        title="Reply draft"
+        aside={
+          lead.draft_body !== null && (
+            <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-dark">Drafted by AI</span>
+          )
+        }
+      >
         {/* Keyed on whether a draft exists, so the fields fill in when the score and draft arrive live. */}
         <LeadReplyDraft key={`${lead.id}-${lead.draft_body === null ? 'waiting' : 'ready'}`} lead={lead} />
-      </DetailSection>
+      </DrawerCard>
     </>
   )
 }

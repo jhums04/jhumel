@@ -42,7 +42,8 @@ describe('LeadDrawer', () => {
 
     expect(await screen.findByRole('dialog', { name: 'Maria Santos' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'maria@acme.dev' })).toHaveAttribute('href', 'mailto:maria@acme.dev')
-    expect(screen.getByText('Full lead-to-CRM system, n8n automation workflow')).toBeInTheDocument()
+    expect(screen.getByRole('list', { name: 'Services' })).toHaveTextContent('Full lead-to-CRM system')
+    expect(screen.getByRole('list', { name: 'Services' })).toHaveTextContent('n8n automation workflow')
     expect(screen.getByText('Clear scope and an urgent timeline.')).toBeInTheDocument()
     expect(screen.getByLabelText('Subject')).toHaveValue('Your lead system quote')
     expect(await screen.findByText('Moved from New to Contacted')).toBeInTheDocument()
@@ -53,6 +54,7 @@ describe('LeadDrawer', () => {
     renderDrawer({ lead: createTestLeadDetails({ budget: '3k_to_10k', estimated_price: null }) })
 
     expect(await screen.findByText('$3k to $10k')).toBeInTheDocument()
+    expect(screen.getByText('$3k to $10k budget')).toBeInTheDocument()
     expect(screen.queryByText('Estimate')).not.toBeInTheDocument()
   })
 
@@ -71,6 +73,7 @@ describe('LeadDrawer', () => {
 
     expect(await screen.findByText('The AI draft appears here once the lead is scored.')).toBeInTheDocument()
     expect(screen.getByText('Unscored')).toBeInTheDocument()
+    expect(screen.queryByText('Drafted by AI')).not.toBeInTheDocument()
   })
 
   it('says so when the lead does not exist or is not accessible', async () => {
