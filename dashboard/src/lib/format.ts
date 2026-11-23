@@ -28,3 +28,38 @@ export function formatTimeSince(since: Date, now: Date): string {
 
   return pluralize(Math.floor(hours / 24), 'day')
 }
+
+const compactCurrencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  notation: 'compact',
+  maximumFractionDigits: 1,
+})
+
+// For headline figures: $8,400 stays exact, $12,600 becomes $12.6K.
+export function formatCompactCurrency(amount: number): string {
+  return amount < 10_000 ? formatCurrency(amount) : compactCurrencyFormatter.format(amount)
+}
+
+export function formatPercent(ratio: number): string {
+  return `${Math.round(ratio * 100)}%`
+}
+
+export function formatDuration(milliseconds: number): string {
+  const totalMinutes = Math.round(milliseconds / 60_000)
+  if (totalMinutes < 1) {
+    return 'under 1 min'
+  }
+  if (totalMinutes < 60) {
+    return `${totalMinutes} min`
+  }
+
+  const totalHours = Math.floor(totalMinutes / 60)
+  if (totalHours < 24) {
+    const minutes = totalMinutes % 60
+    return minutes === 0 ? `${totalHours} h` : `${totalHours} h ${minutes} min`
+  }
+
+  const days = Math.round((totalHours / 24) * 10) / 10
+  return `${days} ${days === 1 ? 'day' : 'days'}`
+}

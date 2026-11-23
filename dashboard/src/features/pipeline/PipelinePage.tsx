@@ -1,12 +1,16 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { Button } from '../../components/Button'
+import { useCurrentTime } from '../../lib/useCurrentTime'
 import type { Lead } from '../leads/leadsApi'
 import { LeadArrivalAnnouncer } from '../leads/LeadArrivalAnnouncer'
 import { getStageLabel, type LeadStage } from '../leads/leadStages'
 import { PipelineBoard } from '../leads/PipelineBoard'
 import { useLeads } from '../leads/useLeads'
 import { useUpdateLeadStage } from '../leads/useUpdateLeadStage'
+import { calculatePipelineMetrics } from '../metrics/calculatePipelineMetrics'
+import { MetricsBar } from '../metrics/MetricsBar'
+import { useFirstReplies } from '../metrics/useFirstReplies'
 import type { Organization } from '../organizations/organizationsApi'
 import { useCurrentOrganization } from '../organizations/useCurrentOrganization'
 
@@ -31,6 +35,9 @@ function OrganizationPipeline({ organization }: { organization: Organization }) 
       setArrivalAnnouncement(`New lead: ${lead.full_name}${lead.company === null ? '' : `, ${lead.company}`}`),
   })
   const updateLeadStage = useUpdateLeadStage(organization.id)
+  const firstReplies = useFirstReplies(organization.id)
+  const currentTime = useCurrentTime()
+  const startOfToday = new Date(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate())
 
   function moveLead(lead: Lead, stage: LeadStage) {
     updateLeadStage.mutate({ lead, stage })
@@ -56,6 +63,12 @@ function OrganizationPipeline({ organization }: { organization: Organization }) 
       {leads.isError && (
         <ErrorMessage message="Could not load leads." onRetry={() => void leads.refetch()} />
       )}
+      {leads.isSuccess && firstReplies.isSuccess && (
+        <div className="mt-6">
+          <MetricsBar metrics={calculatePipelineMetrics(leads.data, firstReplies.data, startOfToday)} />
+        </div>
+      )}
+      {firstReplies.isError && <p className="mt-6 text-error">Could not load the pipeline summary.</p>}
       {leads.isSuccess && (
         <div className="mt-6">
           <PipelineBoard leads={leads.data} onMoveLead={moveLead} />

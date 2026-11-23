@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { leadActivitiesQueryKey, leadQueryKey } from '../leads/useLead'
 import { sendFollowUp } from './sendFollowUp'
 
-// After sending, n8n has logged the reply and may have moved the lead to Contacted.
+// After sending, n8n has logged the reply (which changes response time) and may have moved the lead to Contacted.
 export function useSendFollowUp() {
   const queryClient = useQueryClient()
 
@@ -13,6 +13,7 @@ export function useSendFollowUp() {
         queryClient.invalidateQueries({ queryKey: leadQueryKey(leadId) }),
         queryClient.invalidateQueries({ queryKey: leadActivitiesQueryKey(leadId) }),
         queryClient.invalidateQueries({ queryKey: ['leads'] }),
+        queryClient.invalidateQueries({ queryKey: ['first-replies'] }),
       ])
     },
   })
