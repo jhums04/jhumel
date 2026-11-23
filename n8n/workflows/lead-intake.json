@@ -285,6 +285,47 @@
           "queryReplacement": "={{ [ $json.score, $json.score_reason, $json.draft_subject, $json.draft_body, $json.lead_id ] }}"
         }
       }
+    },
+    {
+      "id": "4c7a1e95-8b3d-4f2a-9e6c-0d1b3f5a7c54",
+      "name": "Prepare Telegram alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Builds the Telegram alert. Demo leads post to a public channel, so they never show contact details.\nconst SERVICE_NAMES = {\n  automation: 'Automation',\n  lead_system: 'Lead system',\n  supabase_app: 'Supabase app',\n  wordpress_plugin: 'WordPress plugin',\n  rescue: 'App rescue',\n};\n\nconst TIMELINE_NAMES = {\n  standard: 'Standard',\n  rush: 'Rush',\n};\n\n// Visitor input goes into an HTML message, so <, > and & must not reach Telegram unescaped.\nfunction escapeHtml(text) {\n  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n}\n\nconst lead = $('Verify signature').first().json.lead;\nconst scoring = $('Read scoring result').first().json;\nconst isDemoOrganization = lead.organization_slug === 'demo';\n\nconst services = lead.services.map((service) => SERVICE_NAMES[service] ?? service).join(', ');\nconst timeline = TIMELINE_NAMES[lead.timeline] ?? lead.timeline;\nconst estimate = Number(lead.estimated_price).toLocaleString('en-US', {\n  style: 'currency',\n  currency: 'USD',\n  minimumFractionDigits: 0,\n  maximumFractionDigits: 2,\n});\nconst score = scoring.score.toUpperCase();\n\nlet lines;\nif (isDemoOrganization) {\n  const firstName = lead.full_name.trim().split(/\\s+/)[0];\n  lines = [\n    `<b>New demo lead: ${score}</b>`,\n    lead.company ? `${escapeHtml(firstName)} from ${escapeHtml(lead.company)}` : escapeHtml(firstName),\n    `${services} · ${timeline}`,\n    `Estimate: ${estimate}`,\n    `Why: ${escapeHtml(scoring.score_reason)}`,\n  ];\n} else {\n  const contact = [lead.email, lead.phone].filter(Boolean).map(escapeHtml).join(' · ');\n  lines = [\n    `<b>New lead: ${score}</b>`,\n    lead.company ? `${escapeHtml(lead.full_name)}, ${escapeHtml(lead.company)}` : escapeHtml(lead.full_name),\n    contact,\n    `${services} · ${timeline}`,\n    `Estimate: ${estimate}`,\n    `Why: ${escapeHtml(scoring.score_reason)}`,\n    `<a href=\"${$env.DASHBOARD_URL}/leads/${scoring.lead_id}\">Open in dashboard</a>`,\n  ];\n}\n\nreturn [\n  {\n    json: {\n      chat_id: isDemoOrganization ? $env.TELEGRAM_DEMO_CHAT_ID : $env.TELEGRAM_PRIVATE_CHAT_ID,\n      text: lines.join('\\n'),\n    },\n  },\n];\n"
+      }
+    },
+    {
+      "id": "9e5b2f16-3c8a-4d7e-b1f4-2a6c8e0b4d65",
+      "name": "Notify on Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2880,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "telegramApi": {
+          "id": "gLBAL60sDbA71OUv",
+          "name": "Telegram account"
+        }
+      },
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "disable_web_page_preview": true
+        }
+      }
     }
   ],
   "connections": {
@@ -411,10 +452,33 @@
           }
         ]
       ]
+    },
+    "Save score": {
+      "main": [
+        [
+          {
+            "node": "Prepare Telegram alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Telegram alert": {
+      "main": [
+        [
+          {
+            "node": "Notify on Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "errorWorkflow": "errorAlertFlow01"
   },
   "pinData": {}
 }
