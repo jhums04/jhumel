@@ -29,7 +29,8 @@
       "error",
       {
         "allow": [
-          "**/*.css"
+          "**/*.css",
+          "@testing-library/jest-dom/vitest"
         ]
       }
     ]

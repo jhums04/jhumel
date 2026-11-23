@@ -5,6 +5,8 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
     // env.ts runs on import, so tests get placeholder values instead of the developer's .env.
     env: {
       VITE_SUPABASE_URL: 'http://127.0.0.1:54321',

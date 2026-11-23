@@ -9,24 +9,22 @@ async function countVisibleLeads(): Promise<number> {
   return count ?? 0
 }
 
-// Temporary home page until the pipeline board (step 4.3). Signed out, row-level security hides every lead.
+// Temporary home page until the pipeline board (step 4.3). Row-level security limits the count to the user's organization.
 export function ConnectionCheckPage() {
   const visibleLeads = useQuery({ queryKey: ['visible-leads-count'], queryFn: countVisibleLeads })
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-16">
-      <h1 className="text-3xl font-bold">Lead Engine</h1>
-      {visibleLeads.isPending && <p className="mt-4 text-gray-600">Connecting to Supabase...</p>}
+    <>
+      <h1 className="text-2xl font-bold">Pipeline</h1>
+      {visibleLeads.isPending && <p className="mt-4 text-gray-600">Loading leads...</p>}
       {visibleLeads.isError && (
         <p role="alert" className="mt-4 text-error">
-          Could not reach Supabase: {visibleLeads.error.message}
+          Could not load leads: {visibleLeads.error.message}
         </p>
       )}
       {visibleLeads.isSuccess && (
-        <p className="mt-4 text-gray-600">
-          Connected to Supabase. Leads visible while signed out: {visibleLeads.data}.
-        </p>
+        <p className="mt-4 text-gray-600">Leads in your organization: {visibleLeads.data}.</p>
       )}
-    </main>
+    </>
   )
 }
