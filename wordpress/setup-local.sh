@@ -35,3 +35,10 @@ wp option update blog_public 0
 
 wp theme activate jhumel
 wp plugin activate quote-form
+
+# Local only: WordPress re-reads theme patterns on every request instead of caching them until the theme version changes.
+wp config set WP_DEVELOPMENT_MODE 'theme'
+
+# Where the homepage demo section sends visitors, and the demo password it shows. Production sets its own values.
+wp config set JHUMEL_DASHBOARD_URL 'http://localhost:5173'
+wp config set JHUMEL_DEMO_PASSWORD 'demo-password'

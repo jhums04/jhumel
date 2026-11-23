@@ -85,3 +85,82 @@ h2,
 h3 {
 	text-wrap: balance;
 }
+
+/* Demo section: the login is a plain bordered box in monospace, and the instructions stay in view
+   beside the longer form on wide screens. */
+.demo__login {
+	padding: var(--wp--preset--spacing--20);
+	border: 1px solid var(--wp--preset--color--gray-200);
+	border-radius: 4px;
+	background: var(--wp--preset--color--white);
+}
+
+.demo__login > * {
+	margin-block: 0;
+}
+
+.demo__credentials {
+	margin-block-start: var(--wp--preset--spacing--10);
+	font-family: var(--wp--preset--font-family--mono);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.demo__steps {
+	padding-inline-start: 1.25rem;
+}
+
+.demo__steps li + li {
+	margin-block-start: var(--wp--preset--spacing--10);
+}
+
+@media (min-width: 782px) {
+	.demo__intro {
+		position: sticky;
+		top: var(--wp--preset--spacing--40);
+		align-self: flex-start;
+	}
+}
+
+/* Services: one row per service between thin dividers. Name and price on the left, the sentence on the right. */
+.service-list {
+	margin: var(--wp--preset--spacing--40) 0;
+	padding: 0;
+	list-style: none;
+	border-top: 1px solid var(--wp--preset--color--gray-200);
+}
+
+.service-list__item {
+	display: grid;
+	gap: var(--wp--preset--spacing--10) var(--wp--preset--spacing--40);
+	padding-block: var(--wp--preset--spacing--30);
+	border-bottom: 1px solid var(--wp--preset--color--gray-200);
+}
+
+.service-list__name {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--medium);
+}
+
+.service-list__price {
+	margin: 0.25rem 0 0;
+	color: var(--wp--preset--color--gray-600);
+}
+
+.service-list__description {
+	margin: 0;
+	max-width: 70ch;
+}
+
+@media (min-width: 782px) {
+	.service-list__item {
+		grid-template-columns: minmax(16rem, 1fr) 2fr;
+	}
+}
+
+.work-steps {
+	padding-inline-start: 1.25rem;
+}
+
+.work-steps li + li {
+	margin-block-start: var(--wp--preset--spacing--10);
+}
