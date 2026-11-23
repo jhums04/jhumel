@@ -7,6 +7,7 @@ export function createTestLead(overrides: Partial<Lead> = {}): Lead {
     company: 'Acme Dental',
     score: 'high',
     estimated_price: 3000,
+    budget: null,
     created_at: '2026-11-23T10:00:00Z',
     stage: 'new',
     ...overrides,

@@ -31,6 +31,14 @@ describe('LeadCardDetails', () => {
     expect(screen.getByText('Unscored')).toBeInTheDocument()
   })
 
+  it('shows the budget range for a project brief, which has no estimate', () => {
+    render(
+      <LeadCardDetails lead={createTestLead({ estimated_price: null, budget: '1k_to_3k' })} currentTime={currentTime} />,
+    )
+
+    expect(screen.getByText('$1k to $3k')).toBeInTheDocument()
+  })
+
   it('handles a lead without a company or an estimate', () => {
     render(
       <LeadCardDetails lead={createTestLead({ company: null, estimated_price: null })} currentTime={currentTime} />,

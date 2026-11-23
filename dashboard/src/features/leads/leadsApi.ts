@@ -4,7 +4,7 @@ import type { LeadStage } from './leadStages'
 
 export type Lead = Pick<
   Tables<'leads'>,
-  'id' | 'full_name' | 'company' | 'score' | 'estimated_price' | 'created_at' | 'stage'
+  'id' | 'full_name' | 'company' | 'score' | 'estimated_price' | 'budget' | 'created_at' | 'stage'
 >
 
 export type LeadDetails = Lead &
@@ -29,7 +29,7 @@ const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{
 export async function fetchLeads(organizationId: string): Promise<Lead[]> {
   const { data, error } = await supabase
     .from('leads')
-    .select('id, full_name, company, score, estimated_price, created_at, stage')
+    .select('id, full_name, company, score, estimated_price, budget, created_at, stage')
     .eq('organization_id', organizationId)
     .order('created_at', { ascending: false })
 
@@ -49,7 +49,7 @@ export async function fetchLead(leadId: string): Promise<LeadDetails | null> {
   const { data, error } = await supabase
     .from('leads')
     .select(
-      'id, full_name, company, score, estimated_price, created_at, stage, organization_id, email, phone, services, timeline, message, source, score_reason, draft_subject, draft_body',
+      'id, full_name, company, score, estimated_price, budget, created_at, stage, organization_id, email, phone, services, timeline, message, source, score_reason, draft_subject, draft_body',
     )
     .eq('id', leadId)
     .maybeSingle()

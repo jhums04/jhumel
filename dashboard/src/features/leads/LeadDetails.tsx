@@ -4,7 +4,7 @@ import type { LeadDetails as LeadDetailsData } from './leadsApi'
 import { LeadReplyDraft } from './LeadReplyDraft'
 import { LeadStageSelect } from './LeadStageSelect'
 import { ScoreBadge } from './ScoreBadge'
-import { getServiceLabel, getTimelineLabel } from './serviceLabels'
+import { getBudgetLabel, getServiceLabel, getTimelineLabel } from './serviceLabels'
 
 function DetailSection({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -55,9 +55,10 @@ export function LeadDetails({ lead }: { lead: LeadDetailsData }) {
             {lead.services.length === 0 ? 'None selected' : lead.services.map(getServiceLabel).join(', ')}
           </DetailRow>
           {lead.timeline !== null && <DetailRow label="Timeline">{getTimelineLabel(lead.timeline)}</DetailRow>}
-          <DetailRow label="Estimate">
-            {lead.estimated_price === null ? 'No estimate' : formatCurrency(lead.estimated_price)}
-          </DetailRow>
+          {lead.budget !== null && <DetailRow label="Budget">{getBudgetLabel(lead.budget)}</DetailRow>}
+          {lead.estimated_price !== null && (
+            <DetailRow label="Estimate">{formatCurrency(lead.estimated_price)}</DetailRow>
+          )}
           <DetailRow label="Submitted">
             <time dateTime={lead.created_at}>{submittedAt.toLocaleString()}</time>
           </DetailRow>

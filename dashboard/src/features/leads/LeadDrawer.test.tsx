@@ -49,6 +49,13 @@ describe('LeadDrawer', () => {
     expect(screen.getByText('Lead received from the website')).toBeInTheDocument()
   })
 
+  it('shows the budget for a project brief instead of an estimate', async () => {
+    renderDrawer({ lead: createTestLeadDetails({ budget: '3k_to_10k', estimated_price: null }) })
+
+    expect(await screen.findByText('$3k to $10k')).toBeInTheDocument()
+    expect(screen.queryByText('Estimate')).not.toBeInTheDocument()
+  })
+
   it('keeps edits to the reply draft', async () => {
     renderDrawer({ lead: createTestLeadDetails() })
 

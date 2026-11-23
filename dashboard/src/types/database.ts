@@ -71,6 +71,7 @@ export type Database = {
       };
       leads: {
         Row: {
+          budget: string | null;
           company: string | null;
           created_at: string;
           draft_body: string | null;
@@ -93,6 +94,7 @@ export type Database = {
         };
         ComputedFields: never;
         Insert: {
+          budget?: string | null;
           company?: string | null;
           created_at?: string;
           draft_body?: string | null;
@@ -114,6 +116,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
+          budget?: string | null;
           company?: string | null;
           created_at?: string;
           draft_body?: string | null;
@@ -202,6 +205,7 @@ export type Database = {
     };
     Functions: {
       is_organization_member: { Args: { target_organization_id: string }; Returns: boolean };
+      reset_demo_data: { Args: Record<PropertyKey, never>; Returns: undefined };
     };
     Enums: {
       lead_score: "high" | "medium" | "low";

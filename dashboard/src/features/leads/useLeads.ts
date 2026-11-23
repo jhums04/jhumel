@@ -20,6 +20,7 @@ function toLead(row: LeadRow): Lead {
     company: row.company,
     score: row.score,
     estimated_price: row.estimated_price,
+    budget: row.budget,
     created_at: row.created_at,
     stage: row.stage,
   }
