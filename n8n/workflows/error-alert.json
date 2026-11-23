@@ -1,0 +1,87 @@
+{
+  "id": "errorAlertFlow01",
+  "name": "Error alert",
+  "active": false,
+  "nodes": [
+    {
+      "id": "1d6e3a52-7f9b-4c1e-8a2d-5b7c9e1f3a76",
+      "name": "On workflow error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "5f8b4c63-9a1d-4e2f-b3c7-6d8e0a2c4b87",
+      "name": "Prepare error alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "// Builds the failure alert for my private chat. Error messages can quote visitor input, so everything is escaped.\nfunction escapeHtml(text) {\n  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n}\n\nconst { workflow, execution } = $input.first().json;\n\nconst lines = [\n  `<b>Workflow failed: ${escapeHtml(workflow.name)}</b>`,\n  `Failed node: ${escapeHtml(execution.lastNodeExecuted)}`,\n  `Error: ${escapeHtml(execution.error.message)}`,\n  `<a href=\"${execution.url}\">Open execution</a>`,\n];\n\nreturn [\n  {\n    json: {\n      chat_id: $env.TELEGRAM_PRIVATE_CHAT_ID,\n      text: lines.join('\\n'),\n    },\n  },\n];\n"
+      }
+    },
+    {
+      "id": "7a9c5d74-0b2e-4f3a-c4d8-7e9f1b3d5c98",
+      "name": "Notify on Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "telegramApi": {
+          "id": "gLBAL60sDbA71OUv",
+          "name": "Telegram account"
+        }
+      },
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML",
+          "disable_web_page_preview": true
+        }
+      }
+    }
+  ],
+  "connections": {
+    "On workflow error": {
+      "main": [
+        [
+          {
+            "node": "Prepare error alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare error alert": {
+      "main": [
+        [
+          {
+            "node": "Notify on Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}
