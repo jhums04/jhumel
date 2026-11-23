@@ -24,7 +24,7 @@
         0
       ],
       "parameters": {
-        "jsCode": "// Builds the failure alert for my private chat. Error messages can quote visitor input, so everything is escaped.\nfunction escapeHtml(text) {\n  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n}\n\nconst { workflow, execution } = $input.first().json;\n\nconst lines = [\n  `<b>Workflow failed: ${escapeHtml(workflow.name)}</b>`,\n  `Failed node: ${escapeHtml(execution.lastNodeExecuted)}`,\n  `Error: ${escapeHtml(execution.error.message)}`,\n  `<a href=\"${execution.url}\">Open execution</a>`,\n];\n\nreturn [\n  {\n    json: {\n      chat_id: $env.TELEGRAM_PRIVATE_CHAT_ID,\n      text: lines.join('\\n'),\n    },\n  },\n];\n"
+        "jsCode": "// Builds the failure alert for my private chat. Error messages can quote visitor input, so everything is escaped.\nfunction escapeHtml(text) {\n  return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\n}\n\nconst { workflow, execution } = $input.first().json;\n\nconst lines = [\n  `<b>Workflow failed · ${escapeHtml(workflow.name)}</b>`,\n  `<b>Step</b>  ${escapeHtml(execution.lastNodeExecuted)}`,\n  '',\n  `<blockquote>${escapeHtml(execution.error.message)}</blockquote>`,\n  `<a href=\"${execution.url}\">Open the failed run →</a>`,\n];\n\nreturn [\n  {\n    json: {\n      chat_id: $env.TELEGRAM_PRIVATE_CHAT_ID,\n      text: lines.join('\\n'),\n    },\n  },\n];\n"
       }
     },
     {
