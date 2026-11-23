@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { updateLeadStage, type Lead } from './leadsApi'
 import type { LeadStage } from './leadStages'
 import { moveLeadToStage } from './moveLeadToStage'
+import { leadActivitiesQueryKey, leadQueryKey } from './useLead'
 import { leadsQueryKey } from './useLeads'
 
 export type LeadMove = {
@@ -29,6 +30,12 @@ export function useUpdateLeadStage(organizationId: string) {
         queryClient.setQueryData<Lead[]>(queryKey, onMutateResult.previousLeads)
       }
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey }),
+    onSettled: async (_result, _error, { lead }) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey }),
+        queryClient.invalidateQueries({ queryKey: leadQueryKey(lead.id) }),
+        queryClient.invalidateQueries({ queryKey: leadActivitiesQueryKey(lead.id) }),
+      ])
+    },
   })
 }

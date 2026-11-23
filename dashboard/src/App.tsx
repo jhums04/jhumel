@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router'
 import { AppLayout } from './components/AppLayout'
 import { LoginPage } from './features/auth/LoginPage'
 import { RequireAuth } from './features/auth/RequireAuth'
+import { LeadDrawer } from './features/leads/LeadDrawer'
 import { PipelinePage } from './features/pipeline/PipelinePage'
 
 export function App() {
@@ -10,7 +11,9 @@ export function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
-          <Route index element={<PipelinePage />} />
+          <Route path="/" element={<PipelinePage />}>
+            <Route path="leads/:leadId" element={<LeadDrawer />} />
+          </Route>
         </Route>
       </Route>
     </Routes>

@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase'
 import type { Tables } from '../../types/database'
 import { applyLeadChange, type LeadChange } from './applyLeadChange'
 import { fetchLeads, type Lead } from './leadsApi'
+import { leadActivitiesQueryKey, leadQueryKey } from './useLead'
 
 export function leadsQueryKey(organizationId: string) {
   return ['leads', organizationId] as const
@@ -52,6 +53,11 @@ export function useLeads(organizationId: string, { onLeadArrived }: UseLeadsOpti
     )
     if (change.type === 'inserted') {
       onLeadArrived?.(change.lead)
+    } else {
+      // An open drawer shows more fields than the board has, so it refetches: a new score, draft, or stage.
+      const leadId = change.type === 'updated' ? change.lead.id : change.leadId
+      void queryClient.invalidateQueries({ queryKey: leadQueryKey(leadId) })
+      void queryClient.invalidateQueries({ queryKey: leadActivitiesQueryKey(leadId) })
     }
   })
 

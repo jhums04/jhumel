@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Outlet } from 'react-router'
 import { Button } from '../../components/Button'
 import type { Lead } from '../leads/leadsApi'
 import { LeadArrivalAnnouncer } from '../leads/LeadArrivalAnnouncer'
@@ -64,7 +65,17 @@ function OrganizationPipeline({ organization }: { organization: Organization }) 
   )
 }
 
+// The lead drawer is a child route (/leads/:leadId), drawn over the board.
 export function PipelinePage() {
+  return (
+    <>
+      <PipelineContent />
+      <Outlet />
+    </>
+  )
+}
+
+function PipelineContent() {
   const { organizations, currentOrganization } = useCurrentOrganization()
 
   if (organizations.isPending) {

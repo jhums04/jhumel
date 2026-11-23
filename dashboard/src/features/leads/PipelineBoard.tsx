@@ -1,11 +1,6 @@
 import {
   DndContext,
   DragOverlay,
-  KeyboardSensor,
-  MouseSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
   type Announcements,
   type DragEndEvent,
   type DragStartEvent,
@@ -13,11 +8,11 @@ import {
 } from '@dnd-kit/core'
 import { useState } from 'react'
 import { useCurrentTime } from '../../lib/useCurrentTime'
-import { boardKeyboardCoordinates } from './boardKeyboardCoordinates'
 import type { Lead } from './leadsApi'
 import { LeadCardDetails } from './LeadCardDetails'
 import { getStageLabel, isLeadStage, leadStages, type LeadStage } from './leadStages'
 import { PipelineColumn } from './PipelineColumn'
+import { useBoardSensors } from './useBoardSensors'
 
 type PipelineBoardProps = {
   leads: Lead[]
@@ -26,7 +21,7 @@ type PipelineBoardProps = {
 
 const screenReaderInstructions = {
   draggable:
-    'To move a lead, press Space to pick it up, use the left and right arrow keys to choose a column, then press Space to drop it. Press Escape to cancel.',
+    'Press Enter to open a lead. To move it, press Space to pick it up, use the left and right arrow keys to choose a column, then press Space to drop it. Press Escape to cancel.',
 }
 
 function describeColumn(columnId: UniqueIdentifier | undefined): string {
@@ -37,12 +32,7 @@ export function PipelineBoard({ leads, onMoveLead }: PipelineBoardProps) {
   const currentTime = useCurrentTime()
   const [draggedLeadId, setDraggedLeadId] = useState<UniqueIdentifier | null>(null)
 
-  // Mouse drags start after 5px so a click can open the lead later; touch waits 250ms so the board still scrolls.
-  const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 250, tolerance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: boardKeyboardCoordinates }),
-  )
+  const sensors = useBoardSensors()
 
   const findLead = (leadId: UniqueIdentifier) => leads.find((lead) => lead.id === leadId)
   const leadName = (leadId: UniqueIdentifier) => findLead(leadId)?.full_name ?? 'Lead'
