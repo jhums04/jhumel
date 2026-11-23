@@ -6,6 +6,7 @@ type DemoLogin = {
 type Env = {
   supabaseUrl: string
   supabasePublishableKey: string
+  followUpUrl: string
   // Shown on the login page so visitors can try the demo. Null when not configured.
   demoLogin: DemoLogin | null
 }
@@ -19,7 +20,7 @@ function readText(source: EnvSource, name: string): string {
 
 // Fails at startup with the missing names, instead of later as a confusing network error.
 export function readEnv(source: EnvSource): Env {
-  const requiredNames = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY']
+  const requiredNames = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY', 'VITE_N8N_FOLLOW_UP_URL']
   const missingNames = requiredNames.filter((name) => readText(source, name) === '')
 
   if (missingNames.length > 0) {
@@ -34,6 +35,7 @@ export function readEnv(source: EnvSource): Env {
   return {
     supabaseUrl: readText(source, 'VITE_SUPABASE_URL'),
     supabasePublishableKey: readText(source, 'VITE_SUPABASE_PUBLISHABLE_KEY'),
+    followUpUrl: readText(source, 'VITE_N8N_FOLLOW_UP_URL'),
     demoLogin: demoEmail !== '' && demoPassword !== '' ? { email: demoEmail, password: demoPassword } : null,
   }
 }

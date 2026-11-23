@@ -57,6 +57,8 @@ export async function fetchLeadActivities(leadId: string): Promise<LeadActivity[
     .select('id, type, details, created_at')
     .eq('lead_id', leadId)
     .order('created_at', { ascending: false })
+    // Entries written in the same transaction share a timestamp; the id keeps their order.
+    .order('id', { ascending: false })
 
   if (error) {
     throw error
