@@ -5,5 +5,8 @@ services:
     ports:
       - "5678:5678"
     env_file: .env
+    environment:
+      # Workflows read LEAD_WEBHOOK_SECRET and DASHBOARD_URL with $env; n8n 2.x blocks that by default.
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
     volumes:
       - ./data/n8n:/home/node/.n8n
