@@ -18,8 +18,8 @@ $jhumel_demo_password = defined( 'JHUMEL_DEMO_PASSWORD' ) ? JHUMEL_DEMO_PASSWORD
 <section id="demo" class="wp-block-group alignfull has-gray-50-background-color has-background" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
 	<!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|50","top":"var:preset|spacing|50"}}}} -->
 	<div class="wp-block-columns alignwide">
-		<!-- wp:column {"width":"40%","className":"demo__intro"} -->
-		<div class="wp-block-column demo__intro" style="flex-basis:40%">
+		<!-- wp:column {"width":"40%","className":"sticky-intro"} -->
+		<div class="wp-block-column sticky-intro" style="flex-basis:40%">
 			<!-- wp:heading -->
 			<h2 class="wp-block-heading">See it work in five seconds</h2>
 			<!-- /wp:heading -->
@@ -28,8 +28,8 @@ $jhumel_demo_password = defined( 'JHUMEL_DEMO_PASSWORD' ) ? JHUMEL_DEMO_PASSWORD
 			<p>Don't take my word for it. This form feeds the same system I build for clients, running live.</p>
 			<!-- /wp:paragraph -->
 
-			<!-- wp:list {"ordered":true,"className":"demo__steps"} -->
-			<ol class="wp-block-list demo__steps">
+			<!-- wp:list {"ordered":true,"className":"numbered-steps"} -->
+			<ol class="wp-block-list numbered-steps">
 				<!-- wp:list-item -->
 				<li>Send the form with any name and a test email.</li>
 				<!-- /wp:list-item -->
@@ -44,14 +44,14 @@ $jhumel_demo_password = defined( 'JHUMEL_DEMO_PASSWORD' ) ? JHUMEL_DEMO_PASSWORD
 			</ol>
 			<!-- /wp:list -->
 
-			<!-- wp:group {"className":"demo__login","layout":{"type":"default"}} -->
-			<div class="wp-block-group demo__login">
+			<!-- wp:group {"style":{"border":{"color":"var:preset|color|gray-200","width":"1px","radius":"12px"},"spacing":{"padding":{"top":"var:preset|spacing|20","bottom":"var:preset|spacing|20","left":"var:preset|spacing|20","right":"var:preset|spacing|20"},"blockGap":"var:preset|spacing|10"}},"backgroundColor":"white","layout":{"type":"default"}} -->
+			<div class="wp-block-group has-border-color has-white-background-color has-background" style="border-color:var(--wp--preset--color--gray-200);border-width:1px;border-radius:12px;padding-top:var(--wp--preset--spacing--20);padding-right:var(--wp--preset--spacing--20);padding-bottom:var(--wp--preset--spacing--20);padding-left:var(--wp--preset--spacing--20)">
 				<!-- wp:paragraph {"fontSize":"small"} -->
 				<p class="has-small-font-size"><strong>Demo login</strong></p>
 				<!-- /wp:paragraph -->
 
-				<!-- wp:paragraph {"className":"demo__credentials"} -->
-				<p class="demo__credentials">Email: demo@jhumel.dev<br>Password: <?php echo esc_html( $jhumel_demo_password ); ?></p>
+				<!-- wp:paragraph {"fontSize":"small","fontFamily":"mono"} -->
+				<p class="has-mono-font-family has-small-font-size">Email: demo@jhumel.dev<br>Password: <?php echo esc_html( $jhumel_demo_password ); ?></p>
 				<!-- /wp:paragraph -->
 			</div>
 			<!-- /wp:group -->
@@ -72,12 +72,16 @@ $jhumel_demo_password = defined( 'JHUMEL_DEMO_PASSWORD' ) ? JHUMEL_DEMO_PASSWORD
 
 		<!-- wp:column {"width":"60%"} -->
 		<div class="wp-block-column" style="flex-basis:60%">
+			<!-- wp:group {"style":{"border":{"radius":"16px","color":"var:preset|color|gray-200","width":"1px"},"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"shadow":"var:preset|shadow|soft"},"backgroundColor":"white","className":"form-card","layout":{"type":"default"}} -->
+			<div class="wp-block-group form-card has-border-color has-white-background-color has-background" style="border-color:var(--wp--preset--color--gray-200);border-width:1px;border-radius:16px;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40);box-shadow:var(--wp--preset--shadow--soft)">
 			<!-- wp:html -->
 			<?php
 			// Patterns are not passed through the shortcode filter, so the form is rendered here directly.
 			echo do_shortcode( '[quote_form organization="demo" success_message="Your lead is in. Watch the Telegram channel or log into the dashboard: it should appear in about five seconds."]' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- the shortcode escapes its own output.
 			?>
 			<!-- /wp:html -->
+			</div>
+			<!-- /wp:group -->
 		</div>
 		<!-- /wp:column -->
 	</div>

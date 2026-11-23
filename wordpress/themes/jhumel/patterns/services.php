@@ -46,30 +46,54 @@ $jhumel_prices              = array_column( $jhumel_quote_form_settings['service
 		<h2 class="wp-block-heading">What I build</h2>
 		<!-- /wp:heading -->
 
-		<!-- wp:html -->
-		<ul class="service-list alignwide">
-			<?php foreach ( $jhumel_services as $jhumel_key => $jhumel_service ) : ?>
-				<li class="service-list__item">
-					<div>
-						<h3 class="service-list__name"><?php echo esc_html( $jhumel_service['name'] ); ?></h3>
-						<?php if ( isset( $jhumel_prices[ $jhumel_key ] ) ) : ?>
-							<p class="service-list__price">
-								<?php
-								/* translators: %s: starting price in US dollars, for example 2,000. */
-								echo esc_html( sprintf( __( 'From $%s', 'jhumel' ), number_format_i18n( $jhumel_prices[ $jhumel_key ] ) ) );
-								?>
-							</p>
-						<?php endif; ?>
-					</div>
-					<p class="service-list__description"><?php echo esc_html( $jhumel_service['description'] ); ?></p>
-				</li>
-			<?php endforeach; ?>
-		</ul>
-		<!-- /wp:html -->
-
-		<!-- wp:paragraph -->
-		<p>Not sure which one fits? <a href="#contact">Tell me what's eating your team's time</a> and I'll tell you honestly what I'd do.</p>
+		<!-- wp:paragraph {"fontSize":"medium"} -->
+		<p class="has-medium-font-size">Fixed starting prices, so you know the ballpark before we talk.</p>
 		<!-- /wp:paragraph -->
+
+		<!-- wp:group {"align":"wide","style":{"spacing":{"blockGap":"var:preset|spacing|30","margin":{"top":"var:preset|spacing|40"}}},"layout":{"type":"grid","minimumColumnWidth":"19rem"}} -->
+		<div class="wp-block-group alignwide" style="margin-top:var(--wp--preset--spacing--40)">
+			<?php foreach ( $jhumel_services as $jhumel_key => $jhumel_service ) : ?>
+			<!-- wp:group {"style":{"border":{"radius":"16px","color":"var:preset|color|gray-200","width":"1px"},"spacing":{"padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30","right":"var:preset|spacing|30"},"blockGap":"var:preset|spacing|20"}},"backgroundColor":"white","className":"lift-card","layout":{"type":"default"}} -->
+			<div class="wp-block-group lift-card has-border-color has-white-background-color has-background" style="border-color:var(--wp--preset--color--gray-200);border-width:1px;border-radius:16px;padding-top:var(--wp--preset--spacing--30);padding-right:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30)">
+				<?php if ( isset( $jhumel_prices[ $jhumel_key ] ) ) : ?>
+				<!-- wp:paragraph {"className":"pill"} -->
+				<p class="pill">
+					<?php
+					/* translators: %s: starting price in US dollars, for example 2,000. */
+					echo esc_html( sprintf( __( 'From $%s', 'jhumel' ), number_format_i18n( $jhumel_prices[ $jhumel_key ] ) ) );
+					?>
+				</p>
+				<!-- /wp:paragraph -->
+				<?php endif; ?>
+
+				<!-- wp:heading {"level":3} -->
+				<h3 class="wp-block-heading"><?php echo esc_html( $jhumel_service['name'] ); ?></h3>
+				<!-- /wp:heading -->
+
+				<!-- wp:paragraph {"textColor":"gray-600"} -->
+				<p class="has-gray-600-color has-text-color"><?php echo esc_html( $jhumel_service['description'] ); ?></p>
+				<!-- /wp:paragraph -->
+			</div>
+			<!-- /wp:group -->
+			<?php endforeach; ?>
+
+			<!-- wp:group {"style":{"border":{"radius":"16px"},"spacing":{"padding":{"top":"var:preset|spacing|30","bottom":"var:preset|spacing|30","left":"var:preset|spacing|30","right":"var:preset|spacing|30"},"blockGap":"var:preset|spacing|20"},"elements":{"link":{"color":{"text":"var:preset|color|white"}}}},"backgroundColor":"blue","textColor":"white","className":"lift-card","layout":{"type":"default"}} -->
+			<div class="wp-block-group lift-card has-white-color has-blue-background-color has-text-color has-background has-link-color" style="border-radius:16px;padding-top:var(--wp--preset--spacing--30);padding-right:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--30);padding-left:var(--wp--preset--spacing--30)">
+				<!-- wp:heading {"level":3,"textColor":"white"} -->
+				<h3 class="wp-block-heading has-white-color has-text-color"><?php esc_html_e( 'Not sure which one fits?', 'jhumel' ); ?></h3>
+				<!-- /wp:heading -->
+
+				<!-- wp:paragraph -->
+				<p><?php esc_html_e( "Tell me what's eating your team's time, and I'll tell you honestly what I'd build and what it would cost.", 'jhumel' ); ?></p>
+				<!-- /wp:paragraph -->
+
+				<!-- wp:paragraph {"style":{"typography":{"fontWeight":"600"}}} -->
+				<p style="font-weight:600"><a href="#contact"><?php esc_html_e( 'Start a project →', 'jhumel' ); ?></a></p>
+				<!-- /wp:paragraph -->
+			</div>
+			<!-- /wp:group -->
+		</div>
+		<!-- /wp:group -->
 	</div>
 	<!-- /wp:group -->
 </section>
