@@ -28,3 +28,60 @@ Text Domain: jhumel
 footer.wp-block-template-part {
 	border-top: 1px solid var(--wp--preset--color--gray-200);
 }
+
+/* Phones: the name, menu button, and "Work with me" share one row, and the two hero buttons fit side by side. */
+@media (max-width: 599px) {
+	.site-header__actions {
+		gap: var(--wp--preset--spacing--20);
+	}
+
+	.wp-block-site-title,
+	.wp-block-button__link {
+		white-space: nowrap;
+	}
+
+	.wp-block-button__link {
+		padding-inline: 1rem;
+	}
+
+	.wp-block-buttons {
+		gap: 0.75rem;
+	}
+}
+
+/* The mobile menu overlay: large tap targets and the site's own type instead of the core defaults.
+   The desktop menu is right-aligned; the open overlay reads better left-aligned, like the rest of the page. */
+.wp-block-navigation .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container,
+.wp-block-navigation .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item {
+	align-items: flex-start;
+}
+
+.wp-block-navigation__responsive-container.is-menu-open {
+	padding: var(--wp--preset--spacing--40) var(--wp--preset--spacing--20);
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content {
+	align-items: flex-start;
+	padding-top: var(--wp--preset--spacing--50);
+}
+
+.wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content {
+	display: block;
+	padding: var(--wp--preset--spacing--10) 0;
+	font-size: var(--wp--preset--font-size--large);
+	font-weight: 600;
+}
+
+.wp-block-navigation__responsive-container-open,
+.wp-block-navigation__responsive-container-close {
+	min-width: 44px;
+	min-height: 44px;
+	justify-content: center;
+}
+
+/* Even line lengths in headings, so a headline never ends on a lone word or splits "follow-up" at the hyphen. */
+h1,
+h2,
+h3 {
+	text-wrap: balance;
+}
