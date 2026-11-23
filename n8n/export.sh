@@ -26,10 +26,8 @@ for raw_file in "$local_export_dir"/*.json; do
   jq '{id, name, active: false, nodes, connections, settings, pinData: {}}' "$raw_file" \
     > "$workflows_dir/$file_name"
 
-  if grep -qE '"shared"|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}' "$workflows_dir/$file_name"; then
-    echo "Stopped: $file_name still contains an email address or sharing data. Check it before committing." >&2
-    exit 1
-  fi
+  # The same check CI runs, so a bad export is caught here rather than in a pull request.
+  "$repo_root/n8n/check-exports.sh" "$workflows_dir/$file_name" >/dev/null
 
   echo "Exported $workflow_name to n8n/workflows/$file_name"
 done
