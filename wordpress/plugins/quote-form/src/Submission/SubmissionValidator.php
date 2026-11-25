@@ -16,7 +16,7 @@ use QuoteForm\Settings\Settings;
  * Messages match the form's own browser-side checks.
  *
  * Two forms post here: the quote form (priced services from the settings page) and the project brief
- * (the ProjectBrief choices plus a budget and a required description).
+ * (the ProjectBrief choices plus a required description).
  */
 final class SubmissionValidator {
 
@@ -37,7 +37,7 @@ final class SubmissionValidator {
 	 * Validates decoded JSON from the form.
 	 *
 	 * @param array<string, mixed> $input Request body.
-	 * @return array{values: array{is_brief: bool, services: list<string>, timeline: string, budget: ?string, full_name: string, email: string, phone: ?string, company: ?string, message: ?string}, errors: array<string, string>}
+	 * @return array{values: array{is_brief: bool, services: list<string>, timeline: string, full_name: string, email: string, phone: ?string, company: ?string, message: ?string}, errors: array<string, string>}
 	 */
 	public function validate( array $input ): array {
 		$errors   = array();
@@ -59,14 +59,6 @@ final class SubmissionValidator {
 		$timeline          = $this->text( $input, 'timeline' );
 		if ( ! array_key_exists( $timeline, $offered_timelines ) ) {
 			$errors['timeline'] = __( 'Choose a timeline.', 'quote-form' );
-		}
-
-		$budget = null;
-		if ( $is_brief ) {
-			$budget = $this->text( $input, 'budget' );
-			if ( ! array_key_exists( $budget, ProjectBrief::budgets() ) ) {
-				$errors['budget'] = __( 'Choose a budget range, or "Not sure yet".', 'quote-form' );
-			}
 		}
 
 		$full_name = $this->text( $input, 'full_name' );
@@ -103,7 +95,6 @@ final class SubmissionValidator {
 				'is_brief'  => $is_brief,
 				'services'  => $services,
 				'timeline'  => $timeline,
-				'budget'    => $budget,
 				'full_name' => $full_name,
 				'email'     => $email,
 				'phone'     => '' === $phone ? null : $phone,

@@ -20,7 +20,7 @@ const timelineLabels: Partial<Record<string, string>> = {
   rush: 'Rush, as soon as possible',
 }
 
-// Mirrors ProjectBrief::budgets() in the plugin and the leads.budget check constraint.
+// Mirrors the leads.budget check constraint. Only briefs sent before the brief dropped its budget question have one.
 const budgetLabels: Partial<Record<string, string>> = {
   under_1k: 'Under $1k',
   '1k_to_3k': '$1k to $3k',

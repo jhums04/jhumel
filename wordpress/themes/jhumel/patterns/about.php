@@ -5,162 +5,89 @@
  * Categories: jhumel
  * Inserter: no
  *
+ * A first-person story in a plain, senior voice, and beside it the stack a small or medium business would hire for.
+ * No job timeline: big-company titles make small clients worry about cost and over-engineering, so the background
+ * is one sentence about what it means for them.
+ *
  * @package Jhumel
  */
 
+$jhumel_stack = array(
+	__( 'Front end', 'jhumel' )               => array( 'Next.js', 'React', 'TypeScript', 'JavaScript', 'Tailwind CSS', 'HTML', 'CSS' ),
+	__( 'Back end', 'jhumel' )                => array( 'Node.js', 'PHP', 'Java', 'Spring Boot', 'REST APIs', 'Webhooks' ),
+	__( 'Data', 'jhumel' )                    => array( 'PostgreSQL', 'Supabase', 'SQL', 'Redis' ),
+	__( 'Integrations and AI', 'jhumel' )     => array( 'Stripe', 'OpenAI API', 'n8n', 'Make', 'Zapier', 'Telegram bots' ),
+	__( 'CMS', 'jhumel' )                     => array( 'WordPress themes and plugins' ),
+	__( 'Design', 'jhumel' )                  => array( 'Figma' ),
+	__( 'Hosting and delivery', 'jhumel' )    => array( 'Vercel', 'Cloudflare', 'Linux VPS', 'Docker', 'GitHub Actions', 'AWS' ),
+	__( 'Testing', 'jhumel' )                 => array( 'Vitest', 'Playwright' ),
+	__( 'AI-assisted development', 'jhumel' ) => array( 'Claude Code', 'Figma MCP', 'OpenAI Codex', 'ChatGPT' ),
+);
 ?>
-<!-- wp:group {"tagName":"section","anchor":"about","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}}},"layout":{"type":"constrained"}} -->
-<section id="about" class="wp-block-group alignfull" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
-	<!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|50","top":"var:preset|spacing|40"}}}} -->
+<!-- wp:group {"tagName":"section","anchor":"about","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}}},"backgroundColor":"gray-50","layout":{"type":"constrained"}} -->
+<section id="about" class="wp-block-group alignfull has-gray-50-background-color has-background" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
+	<!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|50","top":"var:preset|spacing|50"}}}} -->
 	<div class="wp-block-columns alignwide">
-		<!-- wp:column {"width":"60%"} -->
-		<div class="wp-block-column" style="flex-basis:60%">
+		<!-- wp:column {"width":"45%","className":"sticky-intro"} -->
+		<div class="wp-block-column sticky-intro" style="flex-basis:45%">
 			<!-- wp:heading -->
-			<h2 class="wp-block-heading">About</h2>
+			<h2 class="wp-block-heading">About <em class="accent-underline">me</em></h2>
 			<!-- /wp:heading -->
 
-			<!-- wp:paragraph -->
-			<p>For five years I've built software for banks and insurers in the US and the Philippines: CRMs and tools their operations teams use all day to handle customer requests, from the screens staff work in to the services behind them. The goal was always to make the work run better: fewer manual steps, fewer errors, faster handling, and a clear view of what needs attention next.</p>
+			<!-- wp:paragraph {"fontSize":"medium"} -->
+			<p class="has-medium-font-size">I'm Jhumel, a full-stack developer. I build websites, web applications, internal tools, and automations, and I care most about the unglamorous part: making them work, and keep working.</p>
 			<!-- /wp:paragraph -->
 
 			<!-- wp:paragraph -->
-			<p>I've built in-house tools for small businesses too. Today I use AI-assisted development to move faster, with the habits banks demand: tested, reviewed, and documented.</p>
+			<p>I work across the whole stack: interfaces, back-end services, databases, APIs and integrations, and the hosting underneath, from Vercel to a Linux server with its domains, DNS, SSL, and deployments. I can take an idea to production, or step into an existing codebase and improve it.</p>
 			<!-- /wp:paragraph -->
 
 			<!-- wp:paragraph -->
-			<p>I like clean code, clear communication, and good coffee, not always in that order.</p>
+			<p>For five years I've built software that people depend on every day, from internal tools for operations teams to platforms used by more than a thousand people. You get that discipline without the big-company overhead: one person who builds it, explains it, and answers your messages. Most of that work is private to the companies I built it for, which is why the projects on this page exist: they show the same standards in code you can open.</p>
 			<!-- /wp:paragraph -->
 
+			<!-- wp:paragraph -->
+			<p>I use AI tools like Claude Code and Codex to explore options, draft code, and write tests faster. Nothing ships that I haven't read, tested, and debugged myself.</p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:paragraph -->
+			<p>No design yet? I'll create one. You get the screens as an editable Figma file to review and comment on before any code is written, and then I build exactly what you approved. Already have a design or a site you like? I'll build from that.</p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:paragraph -->
+			<p>I work well on my own, inside a team, or dropped into a project halfway through, even when the documentation is thin.</p>
+			<!-- /wp:paragraph -->
+
+			<!-- wp:html -->
+			<dl class="fact-row">
+				<div><dt><?php esc_html_e( 'Based in', 'jhumel' ); ?></dt><dd><?php esc_html_e( 'Cavite, Philippines', 'jhumel' ); ?></dd></div>
+				<div><dt><?php esc_html_e( 'Hours', 'jhumel' ); ?></dt><dd><?php esc_html_e( 'Flexible, set around your time zone', 'jhumel' ); ?></dd></div>
+				<div><dt><?php esc_html_e( 'Replies', 'jhumel' ); ?></dt><dd><?php esc_html_e( 'Within one business day', 'jhumel' ); ?></dd></div>
+			</dl>
+			<!-- /wp:html -->
 		</div>
 		<!-- /wp:column -->
 
-		<!-- wp:column {"width":"40%"} -->
-		<div class="wp-block-column" style="flex-basis:40%">
-			<!-- wp:group {"style":{"border":{"radius":"16px","color":"var:preset|color|gray-200","width":"1px"},"spacing":{"padding":{"top":"var:preset|spacing|10","bottom":"var:preset|spacing|10","left":"var:preset|spacing|30","right":"var:preset|spacing|30"},"blockGap":"0"},"shadow":"var:preset|shadow|soft"},"backgroundColor":"white","className":"fact-card","layout":{"type":"default"}} -->
-			<div class="wp-block-group fact-card has-border-color has-white-background-color has-background" style="border-color:var(--wp--preset--color--gray-200);border-width:1px;border-radius:16px;padding-top:var(--wp--preset--spacing--10);padding-right:var(--wp--preset--spacing--30);padding-bottom:var(--wp--preset--spacing--10);padding-left:var(--wp--preset--spacing--30);box-shadow:var(--wp--preset--shadow--soft)">
-				<!-- wp:group {"style":{"border":{"bottom":{"color":"var:preset|color|gray-200","width":"1px"}},"spacing":{"padding":{"top":"var:preset|spacing|20","bottom":"var:preset|spacing|20"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--gray-200);border-bottom-width:1px;padding-top:var(--wp--preset--spacing--20);padding-bottom:var(--wp--preset--spacing--20)">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size"><?php esc_html_e( 'Builds', 'jhumel' ); ?></p>
-					<!-- /wp:paragraph -->
-			
-					<!-- wp:paragraph -->
-					<p><?php esc_html_e( 'Websites, CRMs, dashboards, automations, and backends', 'jhumel' ); ?></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
-				<!-- wp:group {"style":{"border":{"bottom":{"color":"var:preset|color|gray-200","width":"1px"}},"spacing":{"padding":{"top":"var:preset|spacing|20","bottom":"var:preset|spacing|20"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--gray-200);border-bottom-width:1px;padding-top:var(--wp--preset--spacing--20);padding-bottom:var(--wp--preset--spacing--20)">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size"><?php esc_html_e( 'Experience', 'jhumel' ); ?></p>
-					<!-- /wp:paragraph -->
-			
-					<!-- wp:paragraph -->
-					<p><?php esc_html_e( '5 years: US and Philippine banks, insurers, and small businesses', 'jhumel' ); ?></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
-				<!-- wp:group {"style":{"border":{"bottom":{"color":"var:preset|color|gray-200","width":"1px"}},"spacing":{"padding":{"top":"var:preset|spacing|20","bottom":"var:preset|spacing|20"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--gray-200);border-bottom-width:1px;padding-top:var(--wp--preset--spacing--20);padding-bottom:var(--wp--preset--spacing--20)">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size"><?php esc_html_e( 'Hours', 'jhumel' ); ?></p>
-					<!-- /wp:paragraph -->
-			
-					<!-- wp:paragraph -->
-					<p><?php esc_html_e( 'Overlap with US and Australian time zones', 'jhumel' ); ?></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
-				<!-- wp:group {"style":{"border":{"bottom":{"color":"var:preset|color|gray-200","width":"1px"}},"spacing":{"padding":{"top":"var:preset|spacing|20","bottom":"var:preset|spacing|20"},"blockGap":"0"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group" style="border-bottom-color:var(--wp--preset--color--gray-200);border-bottom-width:1px;padding-top:var(--wp--preset--spacing--20);padding-bottom:var(--wp--preset--spacing--20)">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size"><?php esc_html_e( 'Replies', 'jhumel' ); ?></p>
-					<!-- /wp:paragraph -->
-			
-					<!-- wp:paragraph -->
-					<p><?php esc_html_e( 'Within one business day', 'jhumel' ); ?></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
+		<!-- wp:column {"width":"55%"} -->
+		<div class="wp-block-column" style="flex-basis:55%">
+			<!-- wp:html -->
+			<h3 class="tool-groups__heading"><?php esc_html_e( 'What I build with', 'jhumel' ); ?></h3>
+			<div class="tool-groups">
+				<?php foreach ( $jhumel_stack as $jhumel_group_name => $jhumel_tools ) : ?>
+					<div>
+						<p class="tool-groups__name"><?php echo esc_html( $jhumel_group_name ); ?></p>
+						<p class="tool-tags">
+							<?php foreach ( $jhumel_tools as $jhumel_tool ) : ?>
+								<span><?php echo esc_html( $jhumel_tool ); ?></span>
+							<?php endforeach; ?>
+						</p>
+					</div>
+				<?php endforeach; ?>
 			</div>
-			<!-- /wp:group -->
-
+			<!-- /wp:html -->
 		</div>
 		<!-- /wp:column -->
 	</div>
 	<!-- /wp:columns -->
-
-	<!-- wp:group {"align":"wide","style":{"border":{"top":{"color":"var:preset|color|gray-200","width":"1px"}},"spacing":{"margin":{"top":"var:preset|spacing|50"},"padding":{"top":"var:preset|spacing|40"}}},"layout":{"type":"default"}} -->
-	<div class="wp-block-group alignwide" style="border-top-color:var(--wp--preset--color--gray-200);border-top-width:1px;margin-top:var(--wp--preset--spacing--50);padding-top:var(--wp--preset--spacing--40)">
-		<!-- wp:heading {"level":3} -->
-		<h3 class="wp-block-heading">Tools I work with</h3>
-		<!-- /wp:heading -->
-
-		<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|30","margin":{"top":"var:preset|spacing|30"}}},"layout":{"type":"grid","minimumColumnWidth":"12rem"}} -->
-		<div class="wp-block-group" style="margin-top:var(--wp--preset--spacing--30)">
-				<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size">Front end</p>
-					<!-- /wp:paragraph -->
-
-					<!-- wp:paragraph {"className":"tool-tags"} -->
-					<p class="tool-tags"><span>HTML</span><span>CSS</span><span>JavaScript</span><span>TypeScript</span><span>React</span><span>Tailwind CSS</span></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
-
-				<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size">Back end</p>
-					<!-- /wp:paragraph -->
-
-					<!-- wp:paragraph {"className":"tool-tags"} -->
-					<p class="tool-tags"><span>Java</span><span>Spring Boot</span><span>PHP</span><span>WordPress</span><span>REST APIs</span><span>Webhooks</span></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
-
-				<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size">Data</p>
-					<!-- /wp:paragraph -->
-
-					<!-- wp:paragraph {"className":"tool-tags"} -->
-					<p class="tool-tags"><span>PostgreSQL</span><span>SQL</span><span>Redis</span><span>Supabase</span></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
-
-				<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size">Automation and AI</p>
-					<!-- /wp:paragraph -->
-
-					<!-- wp:paragraph {"className":"tool-tags"} -->
-					<p class="tool-tags"><span>n8n</span><span>OpenAI API</span><span>Enterprise low-code</span></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
-
-				<!-- wp:group {"style":{"spacing":{"blockGap":"var:preset|spacing|10"}},"layout":{"type":"default"}} -->
-				<div class="wp-block-group">
-					<!-- wp:paragraph {"textColor":"gray-600","fontSize":"small"} -->
-					<p class="has-gray-600-color has-text-color has-small-font-size">Delivery</p>
-					<!-- /wp:paragraph -->
-
-					<!-- wp:paragraph {"className":"tool-tags"} -->
-					<p class="tool-tags"><span>Git</span><span>CI/CD</span><span>Docker</span><span>AWS</span><span>Automated testing</span></p>
-					<!-- /wp:paragraph -->
-				</div>
-				<!-- /wp:group -->
-		</div>
-		<!-- /wp:group -->
-	</div>
-	<!-- /wp:group -->
-
 </section>
 <!-- /wp:group -->

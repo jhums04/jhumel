@@ -7,6 +7,8 @@
 
 add_action( 'init', 'jhumel_register_pattern_category' );
 add_action( 'wp_enqueue_scripts', 'jhumel_enqueue_stylesheet' );
+add_action( 'wp_enqueue_scripts', 'jhumel_enqueue_homepage_scripts' );
+add_action( 'wp_enqueue_scripts', 'jhumel_enqueue_header_script' );
 add_action( 'init', 'jhumel_remove_emoji_support' );
 add_action( 'init', 'jhumel_remove_comment_support' );
 add_action( 'wp_head', 'jhumel_output_meta_tags', 1 );
@@ -29,6 +31,90 @@ function jhumel_register_pattern_category(): void {
  */
 function jhumel_enqueue_stylesheet(): void {
 	wp_enqueue_style( 'jhumel', get_stylesheet_uri(), array(), wp_get_theme()->get( 'Version' ) );
+}
+
+/**
+ * Loads the homepage's two scripts: the screenshot viewer and Lead Engine's demo panel.
+ * No other page has either, so no other page loads them.
+ */
+function jhumel_enqueue_homepage_scripts(): void {
+	if ( ! is_front_page() ) {
+		return;
+	}
+
+	$version = wp_get_theme()->get( 'Version' );
+	$loading = array(
+		'strategy'  => 'defer',
+		'in_footer' => true,
+	);
+
+	wp_enqueue_script( 'jhumel-gallery', get_theme_file_uri( 'assets/js/gallery.js' ), array(), $version, $loading );
+	wp_enqueue_script( 'jhumel-demo-panel', get_theme_file_uri( 'assets/js/demo-panel.js' ), array(), $version, $loading );
+}
+
+/**
+ * Loads the script that compacts the sticky header on scroll. Every page has the header, so every page loads it.
+ */
+function jhumel_enqueue_header_script(): void {
+	wp_enqueue_script(
+		'jhumel-header',
+		get_theme_file_uri( 'assets/js/header.js' ),
+		array(),
+		wp_get_theme()->get( 'Version' ),
+		array(
+			'strategy'  => 'defer',
+			'in_footer' => true,
+		)
+	);
+}
+
+/**
+ * One screenshot for a gallery: the image shown on the page (a smaller copy where one exists) and the full-size
+ * image the viewer opens. Used by the Work and Automations patterns.
+ *
+ * @param string $preview File shown on the page, in assets/images.
+ * @param int    $width   Width of the shown file, so the browser reserves the space before it loads.
+ * @param int    $height  Height of the shown file.
+ * @param string $full    Full-size file for the viewer.
+ * @param string $label   Short visible label.
+ * @param string $alt     What the screenshot shows, for screen readers.
+ * @param string $caption Caption in the viewer: what it does for the business.
+ * @return array<string, string|int>
+ */
+function jhumel_screenshot( string $preview, int $width, int $height, string $full, string $label, string $alt, string $caption ): array {
+	return array(
+		'preview' => $preview,
+		'width'   => $width,
+		'height'  => $height,
+		'full'    => $full,
+		'label'   => $label,
+		'alt'     => $alt,
+		'caption' => $caption,
+	);
+}
+
+/**
+ * Prints a gallery: screenshot links that assets/js/gallery.js opens in the page's one viewer (in the Work
+ * pattern). Without JavaScript each link opens its image.
+ *
+ * @param string                           $variant Layout: "showcase" (one large, then thumbnails) or "stack".
+ * @param array<int, array<string, mixed>> $shots   Screenshots from jhumel_screenshot().
+ */
+function jhumel_print_gallery( string $variant, array $shots ): void {
+	echo '<div class="gallery gallery--' . esc_attr( $variant ) . '" data-gallery>';
+	foreach ( $shots as $shot ) {
+		printf(
+			'<a class="gallery__item" href="%1$s" data-caption="%2$s"><img src="%3$s" alt="%4$s" width="%5$d" height="%6$d" loading="lazy" decoding="async"><span class="gallery__label">%7$s</span></a>',
+			esc_url( get_theme_file_uri( 'assets/images/' . $shot['full'] ) ),
+			esc_attr( $shot['caption'] ),
+			esc_url( get_theme_file_uri( 'assets/images/' . $shot['preview'] ) ),
+			esc_attr( $shot['alt'] ),
+			(int) $shot['width'],
+			(int) $shot['height'],
+			esc_html( $shot['label'] )
+		);
+	}
+	echo '</div>';
 }
 
 /**

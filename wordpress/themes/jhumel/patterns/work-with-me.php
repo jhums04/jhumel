@@ -11,10 +11,10 @@
  */
 
 ?>
-<!-- wp:group {"tagName":"section","anchor":"contact","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}},"elements":{"link":{"color":{"text":"var:preset|color|sky"},":hover":{"color":{"text":"var:preset|color|white"}}},"heading":{"color":{"text":"var:preset|color|white"}}}},"backgroundColor":"navy","textColor":"navy-muted","className":"band-dark","layout":{"type":"constrained"}} -->
-<section id="contact" class="wp-block-group alignfull band-dark has-navy-muted-color has-navy-background-color has-text-color has-background has-link-color" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
-	<!-- wp:columns {"align":"wide","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|50","top":"var:preset|spacing|50"}}}} -->
-	<div class="wp-block-columns alignwide">
+<!-- wp:group {"tagName":"section","anchor":"contact","align":"full","style":{"spacing":{"padding":{"top":"var:preset|spacing|section","bottom":"var:preset|spacing|section"}}},"layout":{"type":"constrained"}} -->
+<section id="contact" class="wp-block-group alignfull" style="padding-top:var(--wp--preset--spacing--section);padding-bottom:var(--wp--preset--spacing--section)">
+	<!-- wp:columns {"align":"wide","className":"contact-panel","style":{"spacing":{"blockGap":{"left":"var:preset|spacing|50","top":"var:preset|spacing|50"}}}} -->
+	<div class="wp-block-columns alignwide contact-panel">
 		<!-- wp:column {"width":"40%","className":"sticky-intro"} -->
 		<div class="wp-block-column sticky-intro" style="flex-basis:40%">
 			<!-- wp:heading -->
@@ -25,8 +25,8 @@
 			<p>Tell me what's eating your team's time. I'll tell you honestly what I'd build, how long it would take, and what it would cost. No sales call needed to get a straight answer.</p>
 			<!-- /wp:paragraph -->
 
-			<!-- wp:list {"className":"check-list check-list--dark"} -->
-			<ul class="wp-block-list check-list check-list--dark">
+			<!-- wp:list {"className":"check-list"} -->
+			<ul class="wp-block-list check-list">
 				<!-- wp:list-item -->
 				<li>Systems, CRMs, and internal tools</li>
 				<!-- /wp:list-item -->
@@ -65,7 +65,7 @@
 
 		<!-- wp:column {"width":"60%"} -->
 		<div class="wp-block-column" style="flex-basis:60%">
-			<!-- wp:group {"style":{"border":{"radius":"16px"},"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"shadow":"var:preset|shadow|soft","elements":{"link":{"color":{"text":"var:preset|color|navy"}}}},"backgroundColor":"white","textColor":"black","className":"form-card","layout":{"type":"default"}} -->
+			<!-- wp:group {"style":{"border":{"radius":"16px"},"spacing":{"padding":{"top":"var:preset|spacing|40","bottom":"var:preset|spacing|40","left":"var:preset|spacing|40","right":"var:preset|spacing|40"}},"shadow":"var:preset|shadow|soft","elements":{"link":{"color":{"text":"var:preset|color|accent"}}}},"backgroundColor":"white","textColor":"black","className":"form-card","layout":{"type":"default"}} -->
 			<div class="wp-block-group form-card has-black-color has-white-background-color has-text-color has-background has-link-color" style="border-radius:16px;padding-top:var(--wp--preset--spacing--40);padding-right:var(--wp--preset--spacing--40);padding-bottom:var(--wp--preset--spacing--40);padding-left:var(--wp--preset--spacing--40);box-shadow:var(--wp--preset--shadow--soft)">
 			<!-- wp:html -->
 			<?php
