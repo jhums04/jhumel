@@ -5,7 +5,7 @@ Description: Block theme for the Jhumel Builds portfolio site.
 Requires at least: 6.6
 Tested up to: 7.1
 Requires PHP: 8.1
-Version: 0.2.0
+Version: 0.4.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: jhumel
@@ -18,49 +18,45 @@ Text Domain: jhumel
 
 /* The quote form plugin reads these so its button, focus ring, and checkboxes match the theme. */
 :root {
-	--quote-form-accent: var(--wp--preset--color--navy);
-	--quote-form-accent-hover: var(--wp--preset--color--amber);
-	--quote-form-accent-hover-text: var(--wp--preset--color--black);
+	--quote-form-accent: var(--wp--preset--color--accent);
+	--quote-form-accent-hover: var(--wp--preset--color--accent-dark);
+	--quote-form-accent-hover-text: var(--wp--preset--color--white);
 	--quote-form-button-radius: 999px;
 }
 
 /* theme.json styles focus only for links and buttons; the menu toggles need it too. */
 .wp-block-navigation__responsive-container-open:focus-visible,
 .wp-block-navigation__responsive-container-close:focus-visible {
-	outline: 2px solid var(--wp--preset--color--navy);
+	outline: 2px solid var(--wp--preset--color--black);
 	outline-offset: 2px;
 }
 
-/* On the navy bands a navy focus ring would vanish, so it turns sky blue there. */
-.band-dark :focus-visible {
-	outline-color: var(--wp--preset--color--sky);
-}
-
-/* Links in running text: navy with an amber underline. theme.json cannot set the underline colour. */
+/* Links in running text: oxblood with a thin underline that thickens on hover. theme.json cannot style the underline. */
 main :is(p, li) a:not(.wp-element-button),
 footer p a {
-	text-decoration-color: var(--wp--preset--color--amber);
-	text-decoration-thickness: 2px;
+	text-decoration-thickness: 1px;
 	text-underline-offset: 0.2em;
 }
 
 main :is(p, li) a:not(.wp-element-button):hover,
 footer p a:hover {
-	text-decoration-color: currentColor;
+	text-decoration-thickness: 2px;
 }
 
 /*
- * Buttons share one hover language. Primary: navy flips to amber, lifts 1px, and its arrow slides forward.
- * Outline: fills with the amber tint and turns navy. theme.json sets the primary colours; it cannot animate,
+ * Buttons share one hover language, the brief's Next button included. Primary: oxblood deepens, lifts 1px, and
+ * its arrow slides forward. Outline: fills with warm stone and turns deep oxblood. theme.json sets the primary colours; it cannot animate,
  * add the arrow, or give the outline variation its own hover.
  */
 .wp-element-button,
-.quote-form__submit {
+.quote-form__submit,
+.quote-form__next {
 	transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .wp-block-button:not(.is-style-outline) > .wp-block-button__link::after,
-.quote-form__submit::after {
+.quote-form__submit::after,
+.quote-form__next::after {
 	content: "→";
 	display: inline-block;
 	margin-inline-start: 0.5em;
@@ -68,37 +64,43 @@ footer p a:hover {
 }
 
 .wp-block-button:not(.is-style-outline) > .wp-block-button__link:is(:hover, :focus-visible),
-.quote-form__submit:is(:hover, :focus-visible) {
+.quote-form__submit:is(:hover, :focus-visible),
+.quote-form__next:is(:hover, :focus-visible) {
 	transform: translateY(-1px);
-	box-shadow: 0 10px 24px -12px rgba(245, 158, 11, 0.75);
+	box-shadow: 0 10px 24px -12px rgba(140, 47, 43, 0.45);
 }
 
 .wp-block-button:not(.is-style-outline) > .wp-block-button__link:is(:hover, :focus-visible)::after,
-.quote-form__submit:is(:hover, :focus-visible)::after {
+.quote-form__submit:is(:hover, :focus-visible)::after,
+.quote-form__next:is(:hover, :focus-visible)::after {
 	transform: translateX(4px);
 }
 
 .wp-block-button.is-style-outline > .wp-block-button__link:is(:hover, :focus-visible) {
-	border-color: var(--wp--preset--color--navy);
-	background-color: var(--wp--preset--color--amber-50);
-	color: var(--wp--preset--color--navy);
+	border-color: var(--wp--preset--color--accent-dark);
+	background-color: var(--wp--preset--color--accent-tint);
+	color: var(--wp--preset--color--accent-dark);
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.wp-element-button,
 	.quote-form__submit,
+	.quote-form__next,
 	.wp-block-button__link::after,
-	.quote-form__submit::after {
+	.quote-form__submit::after,
+	.quote-form__next::after {
 		transition: none;
 	}
 
 	.wp-block-button:not(.is-style-outline) > .wp-block-button__link:is(:hover, :focus-visible),
-	.quote-form__submit:is(:hover, :focus-visible) {
+	.quote-form__submit:is(:hover, :focus-visible),
+	.quote-form__next:is(:hover, :focus-visible) {
 		transform: none;
 	}
 
 	.wp-block-button__link:is(:hover, :focus-visible)::after,
-	.quote-form__submit:is(:hover, :focus-visible)::after {
+	.quote-form__submit:is(:hover, :focus-visible)::after,
+	.quote-form__next:is(:hover, :focus-visible)::after {
 		transform: none;
 	}
 }
@@ -115,6 +117,103 @@ footer p a:hover {
 	flex: 1 0 auto;
 }
 
+/*
+ * The header: a warm ink bar that stays at the top, so it never looks like one of the page's sections. Once the
+ * page scrolls, assets/js/header.js adds .is-compact: less padding, a smaller name, and a soft shadow.
+ * On phones the open menu is a cream overlay, so its links go back to ink.
+ */
+header.wp-block-template-part {
+	position: sticky;
+	top: 0;
+	z-index: 50;
+	background: var(--wp--preset--color--black);
+	transition: box-shadow 0.2s ease;
+}
+
+.site-header {
+	padding-block: var(--wp--preset--spacing--30);
+	transition: padding 0.2s ease;
+}
+
+header.is-compact {
+	box-shadow: 0 10px 30px -18px rgba(31, 26, 23, 0.6);
+}
+
+header.is-compact .site-header {
+	padding-block: 0.625rem;
+}
+
+header .wp-block-site-title {
+	transition: font-size 0.2s ease;
+}
+
+header.is-compact .wp-block-site-title {
+	font-size: 1.0625rem;
+}
+
+header .wp-block-site-title a,
+header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item__content,
+header .wp-block-navigation__responsive-container-open {
+	color: var(--wp--preset--color--paper);
+}
+
+header .wp-block-navigation__responsive-container:not(.is-menu-open) .wp-block-navigation-item__content:hover {
+	color: var(--wp--preset--color--accent-light);
+	text-decoration: none;
+}
+
+header .wp-block-navigation__responsive-container.is-menu-open {
+	color: var(--wp--preset--color--black);
+}
+
+header :focus-visible,
+header .wp-block-navigation__responsive-container-open:focus-visible {
+	outline-color: var(--wp--preset--color--paper);
+}
+
+header .wp-block-navigation__responsive-container.is-menu-open :focus-visible {
+	outline-color: var(--wp--preset--color--black);
+}
+
+/* The header's button is cream on the ink bar, the one light thing in it, so it reads as the main action. */
+header .wp-block-button:not(.is-style-outline) > .wp-block-button__link {
+	background: var(--wp--preset--color--paper);
+	color: var(--wp--preset--color--black);
+}
+
+header .wp-block-button:not(.is-style-outline) > .wp-block-button__link:is(:hover, :focus-visible) {
+	background: var(--wp--preset--color--accent-tint);
+	color: var(--wp--preset--color--accent-dark);
+	box-shadow: none;
+}
+
+header.is-compact .wp-block-button__link {
+	padding-block: 0.55rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	header.wp-block-template-part,
+	.site-header,
+	header .wp-block-site-title {
+		transition: none;
+	}
+}
+
+html {
+	scroll-padding-top: 5.5rem;
+}
+
+.admin-bar header.wp-block-template-part {
+	top: var(--wp-admin--admin-bar--height, 32px);
+}
+
+/* On phones the admin bar scrolls away with the page, so the header sticks to the very top again. */
+@media (max-width: 600px) {
+	.admin-bar header.wp-block-template-part {
+		top: 0;
+	}
+}
+
 /* The divider above the footer; the footer is a template part, which has no border support. */
 footer.wp-block-template-part {
 	border-top: 1px solid var(--wp--preset--color--gray-200);
@@ -127,17 +226,13 @@ h3 {
 	text-wrap: balance;
 }
 
-/* One emphasised phrase per headline: italic serif with an amber underline drawn under the words. */
+/* One emphasised phrase per headline: the serif's italic in oxblood, the way an editor would mark it. */
 .accent-underline {
+	color: var(--wp--preset--color--accent);
 	font-style: italic;
-	text-decoration: underline;
-	text-decoration-color: var(--wp--preset--color--amber);
-	text-decoration-thickness: 0.09em;
-	text-underline-offset: 0.12em;
-	text-decoration-skip-ink: none;
 }
 
-/* Hero trust row: three short facts, each with its own amber dot so the row wraps cleanly on phones. */
+/* Hero proof row: three short facts, each with its own dot so the row wraps cleanly on phones. */
 .trust-row {
 	display: flex;
 	flex-wrap: wrap;
@@ -155,158 +250,79 @@ h3 {
 	width: 0.4rem;
 	height: 0.4rem;
 	border-radius: 999px;
-	background: var(--wp--preset--color--amber);
+	background: var(--wp--preset--color--accent);
 }
 
-/* The label above the hero illustration, marking it as one example with a pulsing "live" dot. */
-.scene-label {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 0.5rem;
-	margin-block-end: var(--wp--preset--spacing--20);
-	color: var(--wp--preset--color--gray-600);
+/*
+ * Hero showcase: real screenshots of both live projects, the Lead Engine pipeline in a desktop frame with the
+ * ServiceOps phone view overlapping its corner. Each is labelled so a visitor sees two projects at a glance.
+ */
+.hero-showcase {
+	position: relative;
+	padding-block-end: 3rem;
+	padding-inline-end: 2rem;
 }
 
-.scene-label::before {
-	content: "";
-	width: 0.5rem;
-	height: 0.5rem;
-	border-radius: 999px;
-	background: var(--wp--preset--color--success);
-	box-shadow: 0 0 0 4px rgba(21, 128, 61, 0.15);
+.hero-showcase figure {
+	position: relative;
+	margin: 0;
 }
 
-/* Hero illustration: a lead arriving, built from plain HTML so it is sharp at any size and weighs nothing. */
-.lead-scene {
-	display: grid;
-	gap: 0.875rem;
-	max-width: 26rem;
-	margin-inline: auto;
-	font-size: var(--wp--preset--font-size--small);
+.hero-showcase img {
+	display: block;
+	width: 100%;
+	height: auto;
 }
 
-.lead-scene__alert,
-.lead-scene__card,
-.lead-scene__pipeline {
-	border-radius: 18px;
+.hero-showcase__desktop img {
+	border: 1px solid var(--wp--preset--color--gray-200);
+	border-radius: 14px;
 	box-shadow: var(--wp--preset--shadow--soft);
 }
 
-.lead-scene__alert {
-	display: grid;
-	gap: 0.125rem;
-	width: 86%;
-	margin-inline-start: auto;
-	padding: 0.875rem 1.125rem;
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--navy-muted);
-	transform: rotate(1.5deg);
+.hero-showcase .hero-showcase__phone {
+	position: absolute;
+	inset-inline-end: 0;
+	inset-block-end: 0;
+	width: 26%;
 }
 
-.lead-scene__alert strong {
-	color: var(--wp--preset--color--white);
+.hero-showcase__phone img {
+	border: 6px solid var(--wp--preset--color--black);
+	border-radius: 24px;
+	box-shadow: 0 24px 48px -20px rgba(31, 26, 23, 0.45);
 }
 
-.lead-scene__alert-source {
-	color: var(--wp--preset--color--sky);
-	font-size: 0.75rem;
-}
-
-.lead-scene__card {
-	padding: 1.25rem;
-	border: 1px solid var(--wp--preset--color--gray-200);
-	background: var(--wp--preset--color--white);
-}
-
-.lead-scene__card-top,
-.lead-scene__card-bottom {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 1rem;
-}
-
-.lead-scene__card-top strong {
-	display: block;
-	font-family: var(--wp--preset--font-family--serif);
-	font-size: var(--wp--preset--font-size--medium);
-}
-
-.lead-scene__card-top span:not(.lead-scene__badge) {
-	color: var(--wp--preset--color--gray-600);
-}
-
-.lead-scene__badge {
-	padding: 0.25rem 0.625rem;
+.hero-showcase figcaption {
+	position: absolute;
+	inset-block-start: 0.75rem;
+	inset-inline-start: 0.75rem;
+	padding: 0.2rem 0.65rem;
 	border-radius: 999px;
-	background: var(--wp--preset--color--navy);
+	background: var(--wp--preset--color--black);
 	color: var(--wp--preset--color--white);
+	font-size: 0.75rem;
 	font-weight: 600;
 }
 
-.lead-scene__reason {
-	margin: 0.875rem 0;
-	color: var(--wp--preset--color--gray-600);
-}
-
-.lead-scene__pill {
-	padding: 0.25rem 0.75rem;
-	border-radius: 999px;
-	background: var(--wp--preset--color--amber-50);
-	color: var(--wp--preset--color--amber-dark);
-	font-weight: 600;
-}
-
-.lead-scene__price {
-	font-weight: 700;
-	font-size: var(--wp--preset--font-size--medium);
-}
-
-.lead-scene__pipeline {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	align-items: end;
-	gap: 0.5rem;
-	width: 90%;
-	padding: 1rem 1.125rem 0.875rem;
-	background: var(--wp--preset--color--white);
-	color: var(--wp--preset--color--gray-600);
-	font-size: 0.75rem;
-	transform: rotate(-1deg);
-}
-
-.lead-scene__pipeline span::before {
-	content: "";
-	display: block;
-	height: calc(var(--count) * 0.875rem);
-	margin-bottom: 0.375rem;
-	border-radius: 6px;
-	background: var(--wp--preset--color--gray-50);
-	border-top: 3px solid var(--wp--preset--color--navy);
+.hero-showcase__phone figcaption {
+	inset-block-start: auto;
+	inset-block-end: -0.875rem;
+	inset-inline-start: 50%;
+	white-space: nowrap;
+	transform: translateX(-50%);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-	.lead-scene__alert {
-		animation: lead-scene-arrive 0.7s 0.5s ease-out both;
-	}
-
-	.lead-scene__card {
-		animation: lead-scene-rise 0.7s 0.15s ease-out both;
+	.hero-showcase__phone {
+		animation: hero-phone-arrive 0.7s 0.3s ease-out both;
 	}
 }
 
-@keyframes lead-scene-arrive {
+@keyframes hero-phone-arrive {
 	from {
 		opacity: 0;
-		transform: translateY(-14px) rotate(1.5deg);
-	}
-}
-
-@keyframes lead-scene-rise {
-	from {
-		opacity: 0;
-		transform: translateY(14px);
+		transform: translateY(16px);
 	}
 }
 
@@ -330,157 +346,215 @@ h3 {
 	}
 }
 
-/* Numbered steps in the demo: serif numerals in circles instead of plain list numbers. */
-.numbered-steps {
-	padding: 0;
-	list-style: none;
-	counter-reset: step;
+/*
+ * Service cards: white with a hairline border on the cream band, the index number in italic serif oxblood,
+ * the way a well-set book numbers its chapters.
+ */
+.service-card {
+	border: 1px solid var(--wp--preset--color--gray-200);
+	background: var(--wp--preset--color--white);
 }
 
-.numbered-steps li {
-	position: relative;
-	padding-inline-start: 2.75rem;
-	counter-increment: step;
+.service-card:hover {
+	border-color: var(--wp--preset--color--accent-tint);
 }
 
-.numbered-steps li + li {
-	margin-block-start: var(--wp--preset--spacing--20);
-}
-
-.numbered-steps li::before {
-	content: counter(step);
-	position: absolute;
-	inset-inline-start: 0;
-	top: -0.125rem;
-	display: grid;
-	place-items: center;
-	width: 2rem;
-	height: 2rem;
-	border-radius: 999px;
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--white);
-	font-family: var(--wp--preset--font-family--serif);
-	font-weight: 600;
-}
-
-/* Capability cards on the navy band: a faint lighter surface instead of white. */
-.dark-card {
-	border: 1px solid rgba(199, 208, 230, 0.16);
-	background: rgba(255, 255, 255, 0.04);
-}
-
-.dark-card:hover {
-	background: rgba(255, 255, 255, 0.07);
-}
-
-.band-dark .card-index {
-	color: var(--wp--preset--color--amber);
-}
-
-/* Small serif index on capability cards. */
 .card-index {
 	margin: 0;
-	color: var(--wp--preset--color--amber-dark);
-	font-family: var(--wp--preset--font-family--serif);
+	color: var(--wp--preset--color--accent);
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: var(--wp--preset--font-size--medium);
+	font-style: italic;
 	font-weight: 600;
 }
 
-/* Large serif figures: results in the track record. */
-.result-figure {
-	margin: 0;
-	font-family: var(--wp--preset--font-family--serif);
+/* Every service card ends with the same link to its proof, pinned to the bottom so the six line up. */
+.service-card {
+	display: flex;
+	flex-direction: column;
+}
+
+.service-card .card-link {
+	margin-block-start: auto;
+	padding-block-start: var(--wp--preset--spacing--20);
+	font-weight: 600;
+}
+
+.service-card .card-link a {
+	text-decoration: none;
+}
+
+.service-card .card-link a:hover {
+	text-decoration: underline;
+}
+
+/*
+ * Contact: the whole section sits in one warm stone panel, with the white brief card on it. Warm and inviting,
+ * and as readable as the rest of the page.
+ */
+.contact-panel {
+	padding: var(--wp--preset--spacing--50);
+	border-radius: 28px;
+	background: var(--wp--preset--color--accent-tint);
+}
+
+@media (max-width: 599px) {
+	.contact-panel {
+		padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--20);
+		border-radius: 20px;
+	}
+}
+
+/*
+ * How we'd work together: four steps in a row (two on tablets, one on phones), each under an ink rule with a
+ * two-digit number, ending with the one thing the client walks away with. Then the three promises on a stone strip.
+ */
+.process-steps {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: var(--wp--preset--spacing--40) var(--wp--preset--spacing--30);
+	margin-block: var(--wp--preset--spacing--50) 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: process-step;
+}
+
+.process-steps__item {
+	display: grid;
+	align-content: start;
+	gap: 0.75rem;
+	padding-block-start: var(--wp--preset--spacing--30);
+	border-top: 2px solid var(--wp--preset--color--black);
+	counter-increment: process-step;
+}
+
+.process-steps__item::before {
+	content: counter(process-step, decimal-leading-zero);
+	color: var(--wp--preset--color--accent);
+	font-family: var(--wp--preset--font-family--heading);
+	font-size: var(--wp--preset--font-size--large);
 	font-weight: 600;
 	line-height: 1;
 }
 
-.result-figure {
-	font-size: clamp(1.875rem, 3vw, 2.25rem);
-	letter-spacing: -0.02em;
-}
-
-/* Screenshots sit in a white frame with a soft shadow, like a print on the page. */
-.screenshot-frame {
+.process-steps__title,
+.process-steps__text,
+.process-steps__outcome {
 	margin: 0;
 }
 
-/* The screenshots are printed as HTML, so the Image block's own sizing rules are not loaded for them. */
-.screenshot-frame img {
-	display: block;
-	max-width: 100%;
-	height: auto;
-	padding: 0.5rem;
-	border-radius: 16px;
-	background: var(--wp--preset--color--white);
-	box-shadow: var(--wp--preset--shadow--soft);
+.process-steps__title {
+	font-size: var(--wp--preset--font-size--medium);
 }
 
-.screenshot-frame + .screenshot-frame {
-	margin-block-start: var(--wp--preset--spacing--40);
+.process-steps__text {
+	color: var(--wp--preset--color--gray-600);
 }
 
-.screenshot-frame figcaption {
-	margin-block-start: 0.875rem;
-}
-
-/* Screenshots on navy: a faint translucent frame instead of a white one, and a deeper shadow. */
-.band-dark .screenshot-frame img {
-	padding: 0.375rem;
-	background: rgba(255, 255, 255, 0.1);
-	box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
-}
-
-/* Text on the navy bands: captions and secondary text use the muted colour, not the light-surface gray. */
-.band-dark .wp-element-caption {
-	color: var(--wp--preset--color--navy-muted);
-}
-
-/*
- * How it works: seven steps on one vertical rail. Each step has a navy number on the rail, a short explanation
- * with tool tags, and a visual. The visuals that are not screenshots are small HTML recreations of the product.
- */
-.pipeline-step {
+.process-steps__outcome {
 	position: relative;
-	padding-inline-start: 4rem;
-	padding-block-end: var(--wp--preset--spacing--50);
+	padding-inline-start: 1.625rem;
+	font-weight: 600;
 }
 
-.pipeline-step::before {
+.process-steps__outcome::before {
 	content: "";
 	position: absolute;
-	inset-block: 2.75rem 0.5rem;
-	inset-inline-start: 1.1875rem;
-	border-inline-start: 2px dashed var(--wp--preset--color--gray-200);
+	inset-inline-start: 0.125rem;
+	inset-block-start: 0.45em;
+	width: 0.7rem;
+	height: 0.4rem;
+	border-inline-start: 2px solid var(--wp--preset--color--accent-dark);
+	border-block-end: 2px solid var(--wp--preset--color--accent-dark);
+	transform: rotate(-45deg);
 }
 
-.pipeline-step:last-child {
-	padding-block-end: 0;
-}
-
-.pipeline-step:last-child::before {
-	content: none;
-}
-
-.pipeline-step__number {
-	position: absolute;
-	inset-block-start: 0;
-	inset-inline-start: 0;
-	display: grid;
-	place-items: center;
-	width: 2.5rem;
-	height: 2.5rem;
-	margin: 0;
-	border-radius: 999px;
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--white);
-	font-family: var(--wp--preset--font-family--serif);
+.promise-strip {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem 2.5rem;
+	margin-block: var(--wp--preset--spacing--50) 0;
+	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--40);
+	border-radius: 16px;
+	background: var(--wp--preset--color--accent-tint);
+	color: var(--wp--preset--color--accent-dark);
 	font-weight: 600;
-	box-shadow: 0 0 0 6px var(--wp--preset--color--white);
+	list-style: none;
 }
 
-.pipeline-step__visual--narrow .screenshot-frame {
-	max-width: 24rem;
+.promise-strip li {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.625rem;
 }
 
+.promise-strip li::before {
+	content: "";
+	width: 0.5rem;
+	height: 0.5rem;
+	border-radius: 999px;
+	background: var(--wp--preset--color--accent);
+}
+
+@media (max-width: 1023px) {
+	.process-steps {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 599px) {
+	.process-steps {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* About: three quick facts under the story, and the stack beside it. */
+.fact-row {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+	margin-block: var(--wp--preset--spacing--40) 0;
+	padding-block-start: var(--wp--preset--spacing--30);
+	border-top: 1px solid var(--wp--preset--color--gray-200);
+}
+
+.fact-row dt {
+	color: var(--wp--preset--color--gray-600);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.fact-row dd {
+	margin: 0;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+.tool-groups__heading {
+	margin-block: 0 var(--wp--preset--spacing--30);
+}
+
+.tool-groups {
+	display: grid;
+	gap: 1rem;
+}
+
+.tool-groups__name {
+	margin: 0 0 0.375rem;
+	color: var(--wp--preset--color--gray-600);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.tool-groups .tool-tags {
+	margin: 0;
+}
+
+@media (max-width: 599px) {
+	.fact-row {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* Small outlined tags naming the tools behind each project and in About. */
 .tool-tags {
 	display: flex;
 	flex-wrap: wrap;
@@ -496,271 +570,7 @@ h3 {
 	font-size: var(--wp--preset--font-size--small);
 }
 
-/* Shared surface for the HTML visuals: a white card with the soft shadow. */
-.mini-form,
-.ai-card,
-.node-chain,
-.tg-chat {
-	max-width: 30rem;
-	border: 1px solid var(--wp--preset--color--gray-200);
-	border-radius: 18px;
-	background: var(--wp--preset--color--white);
-	box-shadow: var(--wp--preset--shadow--soft);
-	font-size: var(--wp--preset--font-size--small);
-}
-
-/* Step 1: the quote form, simplified. */
-.mini-form {
-	display: grid;
-	gap: 0.875rem;
-	padding: 1.25rem;
-}
-
-.mini-form__label {
-	margin: 0;
-	font-weight: 600;
-}
-
-.mini-form__chips {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 0.375rem;
-}
-
-.mini-form__chips span {
-	padding: 0.3rem 0.75rem;
-	border: 1px solid var(--wp--preset--color--gray-200);
-	border-radius: 999px;
-}
-
-.mini-form__chips .is-selected {
-	border-color: var(--wp--preset--color--navy);
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--white);
-}
-
-.mini-form__field {
-	display: grid;
-	gap: 0.25rem;
-	padding: 0.625rem 0.75rem;
-	border: 1px solid var(--wp--preset--color--gray-200);
-	border-radius: 10px;
-}
-
-.mini-form__field span {
-	color: var(--wp--preset--color--gray-600);
-	font-size: 0.75rem;
-}
-
-.mini-form__estimate {
-	padding: 0.625rem 0.75rem;
-	border-radius: 10px;
-	background: var(--wp--preset--color--amber-50);
-	color: var(--wp--preset--color--amber-dark);
-}
-
-.mini-form__button {
-	justify-self: start;
-	padding: 0.55rem 1.1rem;
-	border-radius: 999px;
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--white);
-	font-weight: 600;
-}
-
-/* Step 2: the signed request, as code. */
-.code-card {
-	max-width: 30rem;
-	margin: 0;
-	padding: 1.25rem 1.375rem;
-	overflow-x: auto;
-	border-radius: 18px;
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--navy-muted);
-	font-family: var(--wp--preset--font-family--mono);
-	font-size: 0.8125rem;
-	line-height: 1.7;
-	white-space: pre;
-	box-shadow: var(--wp--preset--shadow--soft);
-}
-
-.code-card__method {
-	padding: 0.1rem 0.4rem;
-	border-radius: 4px;
-	background: var(--wp--preset--color--amber);
-	color: var(--wp--preset--color--black);
-	font-weight: 700;
-}
-
-.code-card__key {
-	color: var(--wp--preset--color--sky);
-}
-
-/* Step 3: the n8n workflow as a chain of steps. */
-.node-chain {
-	display: grid;
-	gap: 0;
-	margin: 0;
-	padding: 1rem 1.25rem;
-	list-style: none;
-	counter-reset: node;
-}
-
-.node-chain li {
-	position: relative;
-	padding: 0.5rem 0 0.5rem 2.25rem;
-	counter-increment: node;
-	font-weight: 600;
-}
-
-.node-chain li::before {
-	content: counter(node);
-	position: absolute;
-	inset-inline-start: 0;
-	inset-block-start: 0.4rem;
-	display: grid;
-	place-items: center;
-	width: 1.5rem;
-	height: 1.5rem;
-	border-radius: 7px;
-	background: var(--wp--preset--color--gray-50);
-	border: 1px solid var(--wp--preset--color--gray-200);
-	font-size: 0.75rem;
-}
-
-.node-chain li + li::after {
-	content: "";
-	position: absolute;
-	inset-inline-start: 0.72rem;
-	inset-block-start: -0.35rem;
-	height: 0.75rem;
-	border-inline-start: 2px solid var(--wp--preset--color--gray-200);
-}
-
-.node-chain small {
-	margin-inline-start: 0.375rem;
-	padding: 0.1rem 0.5rem;
-	border-radius: 999px;
-	background: var(--wp--preset--color--amber-50);
-	color: var(--wp--preset--color--amber-dark);
-	font-weight: 600;
-}
-
-/* Step 4: the AI's score and draft. */
-.ai-card {
-	display: grid;
-	gap: 0.75rem;
-	padding: 1.25rem;
-}
-
-.ai-card__top {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.ai-card__label {
-	color: var(--wp--preset--color--gray-600);
-	font-size: 0.75rem;
-	font-weight: 600;
-}
-
-.ai-card__badge {
-	padding: 0.2rem 0.7rem;
-	border-radius: 999px;
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--white);
-	font-weight: 600;
-}
-
-.ai-card__reason {
-	margin: 0;
-	font-family: var(--wp--preset--font-family--serif);
-	font-size: var(--wp--preset--font-size--medium);
-	line-height: 1.35;
-}
-
-.ai-card__draft {
-	padding: 0.875rem 1rem;
-	border-radius: 12px;
-	background: var(--wp--preset--color--paper);
-}
-
-.ai-card__draft p {
-	margin: 0.375rem 0 0;
-}
-
-/* Step 5: the Telegram alert, recreated so it is readable and shows no real person's details. */
-.tg-chat {
-	overflow: hidden;
-	background: var(--wp--preset--color--gray-50);
-}
-
-.tg-chat__header {
-	display: flex;
-	align-items: center;
-	gap: 0.75rem;
-	padding: 0.75rem 1rem;
-	background: var(--wp--preset--color--white);
-}
-
-.tg-chat__header strong,
-.tg-chat__header span:not(.tg-chat__avatar) {
-	display: block;
-}
-
-.tg-chat__header span:not(.tg-chat__avatar) {
-	color: var(--wp--preset--color--gray-600);
-	font-size: 0.75rem;
-}
-
-.tg-chat__avatar {
-	display: grid;
-	place-items: center;
-	width: 2.25rem;
-	height: 2.25rem;
-	border-radius: 999px;
-	background: var(--wp--preset--color--navy);
-	color: var(--wp--preset--color--white);
-	font-weight: 700;
-	font-size: 0.75rem;
-}
-
-.tg-chat__bubble {
-	position: relative;
-	margin: 1rem;
-	padding: 0.875rem 1rem 1.5rem;
-	border-radius: 14px 14px 14px 4px;
-	background: var(--wp--preset--color--white);
-	line-height: 1.5;
-}
-
-.tg-chat__bubble p {
-	margin: 0 0 0.625rem;
-}
-
-.tg-chat__bubble blockquote {
-	margin: 0 0 0.625rem;
-	padding: 0.375rem 0.75rem;
-	border-inline-start: 3px solid var(--wp--preset--color--navy);
-	border-radius: 4px;
-	background: var(--wp--preset--color--gray-50);
-}
-
-.tg-chat__link {
-	color: var(--wp--preset--color--navy);
-	font-weight: 600;
-}
-
-.tg-chat__time {
-	position: absolute;
-	inset-inline-end: 0.75rem;
-	inset-block-end: 0.375rem;
-	color: var(--wp--preset--color--gray-600);
-	font-size: 0.6875rem;
-}
-
-/* Fact lists with amber check marks: Under the hood and Work with me. */
+/* Fact lists with check marks: the case studies and Work with me. */
 .check-list {
 	display: grid;
 	gap: 0.625rem;
@@ -781,16 +591,461 @@ h3 {
 	inset-block-start: 0.45em;
 	width: 0.7rem;
 	height: 0.4rem;
-	border-inline-start: 2px solid var(--wp--preset--color--amber-dark);
-	border-block-end: 2px solid var(--wp--preset--color--amber-dark);
+	border-inline-start: 2px solid var(--wp--preset--color--accent-dark);
+	border-block-end: 2px solid var(--wp--preset--color--accent-dark);
 	transform: rotate(-45deg);
 }
 
-.check-list--dark li::before {
-	border-color: var(--wp--preset--color--amber);
+/*
+ * Work: each project is a white card on the grey band, so the section heading clearly owns both. The card's
+ * header (name, one-line summary, status pills) sits above a text column and the screenshots; Lead Engine's
+ * card also holds its demo panel.
+ */
+.project-card {
+	margin-block-start: var(--wp--preset--spacing--50);
+	padding: var(--wp--preset--spacing--40);
+	border: 1px solid var(--wp--preset--color--gray-200);
+	border-radius: 20px;
+	background: var(--wp--preset--color--white);
 }
 
-/* Demo and contact sections: on wide screens the text column stays in view beside the longer form. Block supports cannot make a column sticky. */
+.project-card + .project-card {
+	margin-block-start: var(--wp--preset--spacing--40);
+}
+
+.project-card__header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 1rem 2rem;
+	margin-block-end: var(--wp--preset--spacing--40);
+	padding-block-end: var(--wp--preset--spacing--30);
+	border-bottom: 1px solid var(--wp--preset--color--gray-200);
+}
+
+.project-card__title {
+	margin: 0;
+	font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+}
+
+.project-card__summary {
+	margin: 0.25rem 0 0;
+	color: var(--wp--preset--color--gray-600);
+}
+
+.project-card__meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin: 0;
+}
+
+.project-card__meta span {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.2rem 0.7rem;
+	border: 1px solid var(--wp--preset--color--gray-200);
+	border-radius: 999px;
+	color: var(--wp--preset--color--gray-600);
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.project-card__meta .project-card__live {
+	color: var(--wp--preset--color--black);
+	font-weight: 600;
+}
+
+.project-card__live::before {
+	content: "";
+	width: 0.45rem;
+	height: 0.45rem;
+	border-radius: 999px;
+	background: var(--wp--preset--color--success);
+}
+
+@media (max-width: 599px) {
+	.project-card {
+		padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--20);
+		border-radius: 16px;
+	}
+}
+
+/*
+ * Galleries: every screenshot is a card linking to its full-size image. Two layouts: showcase (one large, then a
+ * row of thumbnails cropped to the top of the screen) and stack (full screenshots one under another).
+ */
+.gallery {
+	display: grid;
+	gap: 0.75rem;
+}
+
+.gallery__item {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	border-radius: 12px;
+	background: var(--wp--preset--color--white);
+	box-shadow: var(--wp--preset--shadow--soft);
+	color: var(--wp--preset--color--black);
+	text-decoration: none;
+	cursor: zoom-in;
+	transition: transform 0.2s ease;
+}
+
+.gallery__item img {
+	display: block;
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+	object-position: top;
+}
+
+.gallery__label {
+	display: block;
+	padding: 0.5rem 0.625rem;
+	border-top: 1px solid var(--wp--preset--color--gray-200);
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+}
+
+.gallery__item:hover {
+	transform: translateY(-3px);
+}
+
+.gallery__item:focus-visible {
+	outline: 2px solid var(--wp--preset--color--black);
+	outline-offset: 3px;
+}
+
+.gallery--showcase {
+	grid-template-columns: repeat(4, 1fr);
+}
+
+.gallery--showcase .gallery__item:first-child {
+	grid-column: 1 / -1;
+}
+
+.gallery--showcase .gallery__item:not(:first-child) img {
+	aspect-ratio: 4 / 3;
+}
+
+.gallery__hint {
+	margin-block-start: var(--wp--preset--spacing--30);
+}
+
+@media (max-width: 599px) {
+	.gallery--showcase {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+/*
+ * Lead Engine's demo panel: opened by Try it live, inside the project card. The steps and the demo login on the
+ * left follow the visitor (current step ink, done step ticked); the demo form is on the right.
+ */
+.demo-panel {
+	margin-block-start: var(--wp--preset--spacing--40);
+	padding: var(--wp--preset--spacing--40);
+	border: 1px solid var(--wp--preset--color--gray-200);
+	border-radius: 16px;
+	background: var(--wp--preset--color--gray-50);
+	scroll-margin-block-start: var(--wp--preset--spacing--30);
+}
+
+.demo-panel[hidden] {
+	display: none;
+}
+
+.demo-panel:focus {
+	outline: none;
+}
+
+.demo-panel__header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem 1rem;
+	margin-block-end: var(--wp--preset--spacing--30);
+}
+
+.demo-panel__title {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--medium);
+}
+
+.demo-panel__columns {
+	display: grid;
+	grid-template-columns: 2fr 3fr;
+	gap: var(--wp--preset--spacing--50);
+	align-items: start;
+}
+
+.demo-panel__guide > p {
+	margin-block: var(--wp--preset--spacing--20) 0;
+}
+
+@media (max-width: 781px) {
+	.demo-panel__columns {
+		grid-template-columns: 1fr;
+		gap: var(--wp--preset--spacing--40);
+	}
+}
+
+.demo-steps {
+	display: grid;
+	gap: var(--wp--preset--spacing--30);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: demo-step;
+}
+
+.demo-steps li {
+	position: relative;
+	padding-inline-start: 2.75rem;
+	color: var(--wp--preset--color--gray-600);
+	counter-increment: demo-step;
+}
+
+.demo-steps li strong {
+	color: var(--wp--preset--color--black);
+}
+
+.demo-steps li::before {
+	content: counter(demo-step);
+	position: absolute;
+	inset-inline-start: 0;
+	top: -0.125rem;
+	display: grid;
+	place-items: center;
+	box-sizing: border-box;
+	width: 2rem;
+	height: 2rem;
+	border: 2px solid var(--wp--preset--color--gray-200);
+	border-radius: 999px;
+	background: var(--wp--preset--color--white);
+	color: var(--wp--preset--color--gray-600);
+	font-family: var(--wp--preset--font-family--heading);
+	font-weight: 600;
+	transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.demo-steps li.is-current {
+	color: var(--wp--preset--color--black);
+}
+
+.demo-steps li.is-current::before {
+	border-color: var(--wp--preset--color--black);
+	background: var(--wp--preset--color--black);
+	color: var(--wp--preset--color--white);
+}
+
+.demo-steps li.is-done::before {
+	content: "✓";
+	border-color: var(--wp--preset--color--success);
+	background: var(--wp--preset--color--success-background);
+	color: var(--wp--preset--color--success);
+	font-family: inherit;
+}
+
+.demo-login {
+	display: block;
+	margin-block: 0.75rem;
+	padding: 0.75rem 1rem;
+	border: 1px solid var(--wp--preset--color--gray-200);
+	border-radius: 12px;
+	background: var(--wp--preset--color--paper);
+	color: var(--wp--preset--color--black);
+}
+
+.demo-steps .wp-block-button {
+	display: inline-block;
+}
+
+/* A quiet secondary action, where a second filled or outlined button would compete. */
+.text-button {
+	min-height: 44px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: var(--wp--preset--color--black);
+	font: inherit;
+	font-weight: 600;
+	text-decoration: underline;
+	text-decoration-color: var(--wp--preset--color--accent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+	cursor: pointer;
+}
+
+.text-button:hover {
+	text-decoration-color: currentColor;
+}
+
+/* The page behind the screenshot viewer stops scrolling while it is open. */
+html:has(dialog[open]) {
+	overflow: hidden;
+}
+
+/*
+ * The screenshot viewer: a full-screen modal dialog on a near-black backdrop, the image as large as the screen
+ * allows, the caption under it, and Previous and Next on either side (under the image on phones).
+ */
+.lightbox {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: none;
+	height: 100%;
+	max-height: none;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: var(--wp--preset--color--on-dark);
+}
+
+.lightbox::backdrop {
+	background: rgba(34, 28, 24, 0.96);
+}
+
+.lightbox[open] {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	grid-template-rows: auto 1fr;
+	align-items: center;
+	gap: 1rem;
+	padding: 1rem;
+}
+
+.lightbox__bar {
+	display: flex;
+	grid-column: 1 / -1;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.lightbox__counter {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.lightbox__figure {
+	display: grid;
+	grid-column: 2;
+	grid-row: 2;
+	justify-items: center;
+	gap: 0.875rem;
+	min-height: 0;
+	height: 100%;
+	margin: 0;
+	align-content: center;
+}
+
+.lightbox__image {
+	max-width: 100%;
+	max-height: calc(100dvh - 10rem);
+	border-radius: 10px;
+	touch-action: pan-y;
+	user-select: none;
+}
+
+.lightbox__caption {
+	max-width: 44rem;
+	color: var(--wp--preset--color--white);
+	text-align: center;
+}
+
+.lightbox__button {
+	min-height: 44px;
+	padding: 0.5rem 1rem;
+	border: 1px solid rgba(255, 255, 255, 0.3);
+	border-radius: 999px;
+	background: transparent;
+	color: var(--wp--preset--color--white);
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.lightbox__button:hover {
+	border-color: var(--wp--preset--color--accent-light);
+	background: rgba(255, 255, 255, 0.08);
+}
+
+.lightbox__button:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent-light);
+	outline-offset: 2px;
+}
+
+.lightbox__nav--previous {
+	grid-column: 1;
+	grid-row: 2;
+}
+
+.lightbox__nav--next {
+	grid-column: 3;
+	grid-row: 2;
+}
+
+@media (max-width: 781px) {
+	.lightbox[open] {
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: auto 1fr auto;
+	}
+
+	.lightbox__figure {
+		grid-column: 1 / -1;
+	}
+
+	.lightbox__nav--previous,
+	.lightbox__nav--next {
+		grid-row: 3;
+	}
+
+	.lightbox__nav--previous {
+		justify-self: start;
+	}
+
+	.lightbox__nav--next {
+		grid-column: 2;
+		justify-self: end;
+	}
+
+	.lightbox__image {
+		max-height: calc(100dvh - 13rem);
+	}
+}
+
+/* The viewer fades in briefly; under reduced motion it simply appears, and nothing in it moves. */
+@media (prefers-reduced-motion: no-preference) {
+	.lightbox[open] {
+		animation: dialog-fade-in 0.15s ease-out;
+	}
+}
+
+@keyframes dialog-fade-in {
+	from {
+		opacity: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.gallery__item,
+	.lightbox__button,
+	.demo-steps li::before {
+		transition: none;
+	}
+
+	.gallery__item:hover {
+		transform: none;
+	}
+}
+
+/* Contact section: on wide screens the text column stays in view beside the brief. Block supports cannot make a column sticky. */
 @media (min-width: 782px) {
 	.sticky-intro {
 		position: sticky;
@@ -852,7 +1107,7 @@ h3 {
 .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content {
 	display: block;
 	padding: var(--wp--preset--spacing--10) 0;
-	font-family: var(--wp--preset--font-family--serif);
+	font-family: var(--wp--preset--font-family--heading);
 	font-size: var(--wp--preset--font-size--large);
 	font-weight: 600;
 }
