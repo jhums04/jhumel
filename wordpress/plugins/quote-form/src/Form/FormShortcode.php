@@ -53,7 +53,7 @@ final class FormShortcode {
 
 	/**
 	 * Renders [quote_form organization="demo" require_message="yes" success_message="..."], or the project brief
-	 * with type="brief": what they need, a budget range, a timeline, and a description, with no price calculator.
+	 * with type="brief": what they need, a timeline, and a description, with no price calculator.
 	 *
 	 * @param array<string, string>|string $attributes Shortcode attributes; WordPress passes '' when there are none.
 	 */
@@ -109,7 +109,6 @@ final class FormShortcode {
 
 		if ( $is_brief ) {
 			$form['services']  = ProjectBrief::services();
-			$form['budgets']   = ProjectBrief::budgets();
 			$form['timelines'] = ProjectBrief::timelines();
 			unset( $form['config']['prices'], $form['config']['timelinePercentages'] );
 		}
@@ -146,7 +145,6 @@ final class FormShortcode {
 			'estimateEmpty'    => __( 'Select a service to see a starting price.', 'quote-form' ),
 			'servicesRequired' => __( 'Choose at least one service.', 'quote-form' ),
 			'needsRequired'    => __( 'Choose at least one thing you need help with.', 'quote-form' ),
-			'budgetRequired'   => __( 'Choose a budget range, or "Not sure yet".', 'quote-form' ),
 			'briefRequired'    => __( 'Tell me a little about the project.', 'quote-form' ),
 			'nameRequired'     => __( 'Enter your name.', 'quote-form' ),
 			'emailInvalid'     => __( 'Enter an email address like name@example.com.', 'quote-form' ),

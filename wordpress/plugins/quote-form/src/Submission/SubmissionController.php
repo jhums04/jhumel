@@ -113,9 +113,8 @@ final class SubmissionController {
 				'services'          => $values['services'],
 				'timeline'          => $values['timeline'],
 				'message'           => $values['message'],
-				// The brief has no price list; its budget range does that job.
+				// The brief has no price list: scope and price are agreed on the call.
 				'estimated_price'   => $values['is_brief'] ? null : $estimator->estimate( $values['services'], $values['timeline'] ),
-				'budget'            => $values['budget'],
 				'submitted_at'      => gmdate( 'c' ),
 			)
 		);

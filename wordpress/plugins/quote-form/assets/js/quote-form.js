@@ -1,5 +1,5 @@
 /**
- * Quote form and project brief: live price estimate (quote form only), validation, and sending.
+ * Quote form and project brief: live price estimate (quote form only), steps (brief only), validation, and sending.
  *
  * The estimate here is display only. The server recalculates it with PriceEstimator.
  */
@@ -123,7 +123,7 @@
 		}
 
 		function clearErrors() {
-			[ 'services', 'budget', 'full_name', 'email', 'message' ].forEach( clearFieldError );
+			[ 'services', 'full_name', 'email', 'message' ].forEach( clearFieldError );
 			statusOutput.hidden = true;
 			statusOutput.textContent = '';
 		}
@@ -138,10 +138,39 @@
 			statusOutput.hidden = false;
 		}
 
+		// The brief asks its questions in steps, one at a time. The quote form has none, so these do nothing there.
+		const steps = Array.from( form.querySelectorAll( '[data-step]' ) );
+		const stepperItems = Array.from( form.querySelectorAll( '.quote-form__stepper-item' ) );
+		let currentStep = 0;
+
+		function showStep( index ) {
+			currentStep = index;
+			steps.forEach( ( step, stepIndex ) => {
+				step.hidden = stepIndex !== index;
+			} );
+			stepperItems.forEach( ( item, itemIndex ) => {
+				item.classList.toggle( 'is-current', itemIndex === index );
+				item.classList.toggle( 'is-done', itemIndex < index );
+			} );
+		}
+
+		// Moving focus to the new step tells screen readers which step they are on, from the step's label.
+		function moveToStep( index ) {
+			showStep( index );
+			steps[ index ].focus();
+		}
+
+		function stepOfField( field ) {
+			return steps.findIndex( ( step ) => step.querySelector( '[name="' + field + '"]' ) !== null );
+		}
+
 		function focusFirstError() {
 			const firstError = form.querySelector( '.quote-form__error:not([hidden])' );
 			if ( firstError === null ) {
 				return;
+			}
+			if ( steps.length > 0 ) {
+				showStep( steps.indexOf( firstError.closest( '[data-step]' ) ) );
 			}
 			const field = firstError.closest( '.quote-form__field, .quote-form__group' );
 			field.querySelector( 'input, select, textarea' ).focus();
@@ -152,9 +181,6 @@
 
 			if ( selectedServiceKeys().length === 0 ) {
 				errors.services = isBrief ? config.messages.needsRequired : config.messages.servicesRequired;
-			}
-			if ( isBrief && fieldValue( 'budget' ) === '' ) {
-				errors.budget = config.messages.budgetRequired;
 			}
 			if ( fieldValue( 'full_name' ) === '' ) {
 				errors.full_name = config.messages.nameRequired;
@@ -167,6 +193,27 @@
 			}
 
 			return errors;
+		}
+
+		// Next checks only the questions on the current step; Send checks them all again.
+		function goToNextStep() {
+			clearErrors();
+
+			const stepErrors = Object.entries( validate() ).filter(
+				( [ field ] ) => stepOfField( field ) === currentStep
+			);
+			if ( stepErrors.length > 0 ) {
+				stepErrors.forEach( ( [ field, message ] ) => showFieldError( field, message ) );
+				focusFirstError();
+				return;
+			}
+
+			moveToStep( currentStep + 1 );
+		}
+
+		function goToPreviousStep() {
+			clearErrors();
+			moveToStep( currentStep - 1 );
 		}
 
 		const turnstileWidget = form.querySelector( '.cf-turnstile' );
@@ -194,8 +241,12 @@
 				},
 				{ rootMargin: '600px 0px' }
 			);
-			observer.observe( form );
-			form.addEventListener( 'focusin', renderTurnstile, { once: true } );
+			// The widget itself is watched, not the form: in the brief it sits on the last step, and it should load
+			// only once that step is on screen.
+			observer.observe( turnstileWidget );
+			( turnstileWidget.closest( '[data-step]' ) ?? form ).addEventListener( 'focusin', renderTurnstile, {
+				once: true,
+			} );
 		}
 
 		function turnstileToken() {
@@ -210,10 +261,12 @@
 			}
 		}
 
+		// Themes can listen for quote-form:sent on the page to show their own next steps after a send.
 		function showSuccess() {
 			form.hidden = true;
 			successPanel.hidden = false;
 			successPanel.focus();
+			wrapper.dispatchEvent( new CustomEvent( 'quote-form:sent', { bubbles: true } ) );
 		}
 
 		// Back to a blank form. The spam-check token was spent on the last send, so the widget gets a fresh one.
@@ -224,6 +277,9 @@
 			successPanel.hidden = true;
 			form.hidden = false;
 			resetTurnstile();
+			if ( steps.length > 0 ) {
+				showStep( 0 );
+			}
 			form.querySelector( 'input:not([type="hidden"]), select, textarea' ).focus();
 		}
 
@@ -245,7 +301,6 @@
 					nonce: fieldValue( 'nonce' ),
 					services: selectedServiceKeys(),
 					timeline: fieldValue( 'timeline' ),
-					budget: fieldValue( 'budget' ),
 					full_name: fieldValue( 'full_name' ),
 					email: fieldValue( 'email' ),
 					phone: fieldValue( 'phone' ),
@@ -306,6 +361,23 @@
 		form.addEventListener( 'submit', handleSubmit );
 		wrapper.querySelector( '[data-role="send-another"]' ).addEventListener( 'click', showBlankForm );
 		updateEstimate();
+
+		if ( steps.length > 0 ) {
+			form.querySelectorAll( '[data-role="stepper"], [data-role="step-controls"], [data-role="back"]' ).forEach(
+				( element ) => {
+					element.hidden = false;
+				}
+			);
+			// The first step has nothing to go back to.
+			steps[ 0 ].querySelector( '[data-role="back"]' ).hidden = true;
+			form.querySelectorAll( '[data-role="next"]' ).forEach( ( button ) =>
+				button.addEventListener( 'click', goToNextStep )
+			);
+			form.querySelectorAll( '[data-role="back"]' ).forEach( ( button ) =>
+				button.addEventListener( 'click', goToPreviousStep )
+			);
+			showStep( 0 );
+		}
 	}
 
 	document.querySelectorAll( '.quote-form' ).forEach( initializeQuoteForm );

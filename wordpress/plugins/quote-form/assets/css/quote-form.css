@@ -60,7 +60,9 @@
 
 .quote-form__input:focus,
 .quote-form__checkbox:focus-visible,
-.quote-form__submit:focus-visible {
+.quote-form__submit:focus-visible,
+.quote-form__next:focus-visible,
+.quote-form__back:focus-visible {
 	outline: 2px solid var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
 	outline-offset: 2px;
 }
@@ -158,7 +160,8 @@
 	border: 0;
 }
 
-.quote-form__submit {
+.quote-form__submit,
+.quote-form__next {
 	justify-self: start;
 	padding: 0.75rem 1.25rem;
 	border: 0;
@@ -170,7 +173,8 @@
 	cursor: pointer;
 }
 
-.quote-form__submit:hover {
+.quote-form__submit:hover,
+.quote-form__next:hover {
 	background-color: var(--quote-form-accent-hover, var(--wp--preset--color--blue-dark, #1e3a8a));
 	color: var(--quote-form-accent-hover-text, var(--wp--preset--color--white, #fff));
 }
@@ -284,6 +288,84 @@
 .quote-form__input::placeholder {
 	color: var(--wp--preset--color--gray-600, #525252);
 	opacity: 0.8;
+}
+
+/*
+ * Project brief steps. The step list shows where the visitor is: done steps and the current one are filled in.
+ * Each step ends with its buttons on one row, Back on the left and the way forward on the right.
+ */
+.quote-form__stepper {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: var(--wp--preset--font-size--small, 0.875rem);
+}
+
+.quote-form__stepper-item {
+	display: grid;
+	gap: 0.5rem;
+	color: var(--wp--preset--color--gray-600, #525252);
+}
+
+.quote-form__stepper-item::before {
+	content: "";
+	height: 4px;
+	border-radius: 999px;
+	background-color: var(--wp--preset--color--gray-200, #e5e5e5);
+}
+
+.quote-form__stepper-item.is-current,
+.quote-form__stepper-item.is-done {
+	color: inherit;
+}
+
+.quote-form__stepper-item.is-current {
+	font-weight: 600;
+}
+
+.quote-form__stepper-item:is(.is-current, .is-done)::before {
+	background-color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
+}
+
+.quote-form__step {
+	display: grid;
+	gap: 1.5rem;
+}
+
+/* Steps take focus only from the script, to announce the step; the step list already shows it on screen. */
+.quote-form__step:focus {
+	outline: none;
+}
+
+.quote-form__actions {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+}
+
+.quote-form__actions > :last-child {
+	margin-inline-start: auto;
+}
+
+.quote-form__back {
+	padding: 0.75rem 0.25rem;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 0.2em;
+	cursor: pointer;
+}
+
+.quote-form__back:hover {
+	color: var(--quote-form-accent, var(--wp--preset--color--blue, #1d4ed8));
 }
 
 @media (prefers-reduced-motion: reduce) {
